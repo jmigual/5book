@@ -6,14 +6,41 @@
 
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.min.css">
+    <link rel="stylesheet" href="css/jquery.circular-carousel.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
+    <script src="js/lipsum.js"></script>
+    <script src="js/jquery.circular-carousel.js"></script>
+    
+    <!-- Libraries configuration -->
     <script>
         $(document).ready(function () {
             $("#fullpage").fullpage({
+                verticalCentered: false,
+                sectionsColor: ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
+                loopBottom: true,
+                fitToSection: false,
                 
+                navigation: true
             });
+
+            var options = {
+                ovalWidth: 400,
+                ovalHeight: 50,
+                offsetX: 100,
+                offsetY: 325,
+                angle: 0,
+                activeItem: 0,
+                duration: 350,
+                className: 'item'
+            };
+            var carousel = $("#qui-som-carousel").CircularCarousel(options);
+            $(".carousel .item").click(function (e) {
+                var index = $(this).index('li');
+                carousel.cycleActiveTo(index);
+                e.preventDefault();
+            })
         });
     </script>
 </head>
