@@ -110,7 +110,7 @@ var Lorem;
                     path += '/' + element.getAttribute('height');
 
                 path += '/' + options.join(' ').replace(/(^\s+|\s+$)/, '');
-                element.src = 'http://lorempixum.com'+path.replace(/\/\//, '/');
+                element.src = 'http://lorempixel.com'+path.replace(/\/\//, '/');
             }
         }
 
