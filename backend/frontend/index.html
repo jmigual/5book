@@ -6,12 +6,15 @@
 
     <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.min.css">
-    <link rel="stylesheet" href="css/jquery.circular-carousel.css">
+    <!--<link rel="stylesheet" href="css/jquery.circular-carousel.css">-->
+    <link rel="stylesheet" href="css/carousel.css">
+    <link rel="stylesheet" href="css/custom.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
     <script src="js/lipsum.js"></script>
-    <script src="js/jquery.circular-carousel.js"></script>
+    <script src="js/circular-carousel.js"></script>
+    <!--<script src="js/jquery.circular-carousel.js"></script>-->
     
     <!-- Libraries configuration -->
     <script>
@@ -35,17 +38,17 @@
                 duration: 350,
                 className: 'item'
             };
-            var carousel = $("#qui-som-carousel").CircularCarousel(options);
+            /*var carousel = $("#qui-som-carousel").CircularCarousel(options);
             $(".carousel .item").click(function (e) {
                 var index = $(this).index('li');
                 carousel.cycleActiveTo(index);
                 e.preventDefault();
-            })
+            })*/
         });
     </script>
 </head>
 <body>
-<div id="fullpage" >
+<div id="fullpage">
     <div class="section">
         <header class="w3-container w3-center w3-gray">
             <h1>5book</h1>
@@ -62,20 +65,20 @@
             <h1>Qui som</h1>
         </header>
         <div class="w3-container w3-center" style="height: 500px;">
-            <ul class="carousel" id="qui-som-carousel">
-                <li class="item">
+            <div class="carousel" data-selected="0">
+                <figure>
                     <img src="" data-lorem="cats/1/Video Judit" width="600" height="400">
                     <p>Judit Cortés</p>
-                </li>
-                <li class="item">
+                </figure>
+                <figure>
                     <img src="" data-lorem="cats/2/Video Guille" width="600" height="400">
                     <p>Guillermo Cueva</p>
-                </li>
-                <li class="item">
+                </figure>
+                <figure>
                     <img src="" data-lorem="cats/3/Video Joan" width="600" height="400">
                     <p>Joan Marcè</p>
-                </li>
-            </ul>
+                </figure>
+            </div>
         </div>
         <!--<div class="w3-container">
             <h1>Judit Cortés</h1>

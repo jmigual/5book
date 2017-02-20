@@ -1,0 +1,16 @@
+.carousel {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+    -ms-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+}
+
+.carousel figure {
+    margin: 0;
+    display: block;
+    position: absolute;
+    border: 2px solid black;
+}
