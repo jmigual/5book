@@ -1,101 +1,88 @@
 <!DOCTYPE html>
 <html lang="ca">
 <head>
-    <meta charset="UTF-8">
-    <title>5book</title>
+  <meta charset="UTF-8">
+  <title>5book</title>
 
-    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.min.css">
-    <!--<link rel="stylesheet" href="css/jquery.circular-carousel.css">-->
-    <link rel="stylesheet" href="css/carousel.css">
-    <link rel="stylesheet" href="css/custom.css">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
-    <script src="js/lipsum.js"></script>
-    <script src="js/circular-carousel.js"></script>
-    <!--<script src="js/jquery.circular-carousel.js"></script>-->
-    
-    <!-- Libraries configuration -->
-    <script>
-        $(document).ready(function () {
-            $("#fullpage").fullpage({
-                verticalCentered: false,
-                sectionsColor: ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
-                loopBottom: true,
-                fitToSection: false,
-                
-                navigation: true
-            });
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.min.css">
+  <!--<link rel="stylesheet" href="css/jquery.circular-carousel.css">-->
+  <link rel="stylesheet" href="css/carousel.css">
+  <link rel="stylesheet" href="css/custom.css">
 
-            var options = {
-                ovalWidth: 400,
-                ovalHeight: 50,
-                offsetX: 100,
-                offsetY: 325,
-                angle: 0,
-                activeItem: 0,
-                duration: 350,
-                className: 'item'
-            };
-            /*var carousel = $("#qui-som-carousel").CircularCarousel(options);
-            $(".carousel .item").click(function (e) {
-                var index = $(this).index('li');
-                carousel.cycleActiveTo(index);
-                e.preventDefault();
-            })*/
-        });
-    </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
+  <script src="js/lipsum.js"></script>
+  <!--<script src="js/jquery.circular-carousel.js"></script>-->
+
+  <!-- Libraries configuration -->
+  <script>
+    $(document).ready(function () {
+      $("#fullpage").fullpage({
+        verticalCentered: false,
+        sectionsColor   : ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
+        loopBottom      : true,
+        fitToSection    : false,
+        
+        navigation: true
+      });
+      
+      var options = {
+        activeItem: 0
+      };
+      $(".carousel").each(function() {
+        var carousel = $(this).CircularCarousel(options);
+      });
+      /*var carousel = $("#qui-som-carousel").CircularCarousel(options);
+       $(".carousel .item").click(function (e) {
+       var index = $(this).index('li');
+       carousel.cycleActiveTo(index);
+       e.preventDefault();
+       })*/
+    });
+  </script>
 </head>
 <body>
 <div id="fullpage">
-    <div class="section">
-        <header class="w3-container w3-center w3-gray">
-            <h1>5book</h1>
-            <p>El llibre de la teva vida</p>
-        </header>
+  <div class="section">
+    <header class="w3-container w3-center w3-gray">
+      <h1>5book</h1>
+      <p>El llibre de la teva vida</p>
+    </header>
+  </div>
+  <div class="section">
+    <header class="w3-panel w3-center w3-gray">
+      <h1>Biblioteca</h1>
+    </header>
+  </div>
+  <div class="section active">
+    <header class="w3-container w3-center w3-gray">
+      <h1>Qui som</h1>
+    </header>
+    <div class="w3-container w3-center carousel-container">
+      <div class="carousel">
+        <figure>
+          <img src="" data-lorem="cats/1/Video Judit" width="600" height="400">
+          <p>Judit Cortés</p>
+        </figure>
+        <figure>
+          <img src="" data-lorem="cats/2/Video Guille" width="600" height="400">
+          <p>Guillermo Cueva</p>
+        </figure>
+        <figure>
+          <img src="" data-lorem="cats/3/Video Joan" width="600" height="400">
+          <p class="wp-center">Joan Marcè</p>
+        </figure>
+      </div>
     </div>
-    <div class="section">
-        <header class="w3-panel w3-center w3-gray">
-            <h1>Biblioteca</h1>
-        </header>
+    <div class="w3-container">
+      <p>
+        <button name="previous">Next</button>
+        <button name="next">Previous</button>
+      </p>
     </div>
-    <div class="section">
-        <header class="w3-container w3-center w3-gray">
-            <h1>Qui som</h1>
-        </header>
-        <div class="w3-container w3-center" style="height: 500px;">
-            <div class="carousel" data-selected="0">
-                <figure>
-                    <img src="" data-lorem="cats/1/Video Judit" width="600" height="400">
-                    <p>Judit Cortés</p>
-                </figure>
-                <figure>
-                    <img src="" data-lorem="cats/2/Video Guille" width="600" height="400">
-                    <p>Guillermo Cueva</p>
-                </figure>
-                <figure>
-                    <img src="" data-lorem="cats/3/Video Joan" width="600" height="400">
-                    <p>Joan Marcè</p>
-                </figure>
-            </div>
-        </div>
-        <!--<div class="w3-container">
-            <h1>Judit Cortés</h1>
-            <div class="w3-third">
-                <div data-lorem="2p"></div>
-            </div>
-            <div class="w3-twothird">
-                <img src="" data-lorem="cats/1/Video Judit" width="600" height="400">
-            </div>
-        </div>
-        <div class="w3-container">
-            <h1>Guillermo Cueva</h1>
-        </div>
-        <div class="w3-container">
-            <h1>Joan Marcè</h1>
-        </div>-->
-    </div>
+  </div>
 </div>
+<script src="js/circular-carousel.js"></script>
 </body>
 </html>
