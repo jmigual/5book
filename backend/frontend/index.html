@@ -14,33 +14,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
   <script src="js/lipsum.js"></script>
   <!--<script src="js/jquery.circular-carousel.js"></script>-->
-
-  <!-- Libraries configuration -->
-  <script>
-    $(document).ready(function () {
-      $("#fullpage").fullpage({
-        verticalCentered: false,
-        sectionsColor   : ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
-        loopBottom      : true,
-        fitToSection    : false,
-        
-        navigation: true
-      });
-      
-      var options = {
-        activeItem: 0
-      };
-      $(".carousel").each(function() {
-        var carousel = $(this).CircularCarousel(options);
-      });
-      /*var carousel = $("#qui-som-carousel").CircularCarousel(options);
-       $(".carousel .item").click(function (e) {
-       var index = $(this).index('li');
-       carousel.cycleActiveTo(index);
-       e.preventDefault();
-       })*/
-    });
-  </script>
 </head>
 <body>
 <div id="fullpage">
@@ -84,5 +57,6 @@
   </div>
 </div>
 <script src="js/circular-carousel.js"></script>
+<script src="js/configs.js"></script>
 </body>
 </html>
