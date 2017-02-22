@@ -7,14 +7,14 @@
   $.fn.CircularCarousel = function (options) {
   
     var $ele = $(this);
-    var childs = $ele.children("figure"),
-        count = childs.length,
+    var children = $ele.children("figure"),
+        count = children.length,
         angleStep = (2*Math.PI)/count,
         width = $ele.width(),
         radius = Math.round((width/2)/Math.tan(angleStep/2));
         activeItem = options.activeItem;
   
-    console.log(childs);
+    console.log(children);
     console.log("Width:", width, "Angle Step:", angleStep, "Radius:", radius);
   
     function drawCarousel() {
@@ -25,14 +25,16 @@
       radius = Math.round(width/2) - 1;
       var imageWidth = 2*radius*Math.cos(angleStep/2);
       
-      $(childs).each(function(i) {
+      $(children).each(function(i) {
         var thetaInterior = (360/count)*i;
-        console.log(this);
+        //console.log(this);
         $(this).css({"transform": "rotateY(" + thetaInterior + "deg) translateZ(" + radius + "px)" });
         $(this).width(imageWidth);
       });
-  
-      $(this).height($(childs[0]).height() + 50);
+
+      var $parent = $ele.parent(".carousel-container");
+      //console.log($parent);
+      $parent.height($(children[0]).height() + 50);
     }
     
     function updateCarousel() {
@@ -51,6 +53,9 @@
     $(document).ready(function() {
       $(window).resize(drawCarousel);
     });
+
+    $(this).resize(drawCarousel);
+    $(children).resize(drawCarousel);
     
     var methods = {
       cycleActive: function (direction) {
