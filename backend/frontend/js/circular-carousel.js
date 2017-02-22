@@ -16,9 +16,18 @@
         activeItem = options.activeItem;
 
     function updateHeight() {
+      if (count <= 0)
+        return;
+
       var $parent = $ele.parent(".carousel-container");
       //console.log($parent);
-      $parent.height($(figures[0]).height() + 50);
+      var max = 0;
+      for (var i = 0; i < count; ++i) {
+        var h = $(figures[i]).height() + 50;
+        if (h > max) max = h;
+      }
+      $parent.height(max);
+      console.log("Max:", max);
     }
 
     function updateCarousel() {
@@ -26,7 +35,8 @@
         return;
 
       var theta = 360/count*(activeItem);
-      $ele.css("transform", "translateZ(" + (-radius) + "px) rotateY(" + theta + "deg)");
+      $ele.css("transform", "translateZ(" + (-0) + "px) rotateY(" + theta + "deg)");
+      updateHeight();
     }
 
     function drawCarousel() {
@@ -44,9 +54,9 @@
       $(figures).each(function(i) {
         var thetaInterior = (360/count)*i;
         //console.log(this);
-        $(this).css({"transform": "rotateY(" + thetaInterior + "deg) translateZ(" + radius + "px)" });
+        $(this).css({"transform": "rotateY(" + thetaInterior + "deg) translateZ(" + 0 + "px)" });
         $(this).width(imageWidth);
-        console.log("Image width (" + i + "):", imageWidth)
+        //console.log("Image width (" + i + "):", imageWidth)
       });
       updateCarousel();
     }
