@@ -10,13 +10,11 @@
     -moz-transform-style: preserve-3d;
     -ms-transform-style: preserve-3d;
     transform-style: preserve-3d;
-    margin-left: auto;
-    margin-right: auto;
+
+    transition: transform 1s;
 }
 
 .carousel figure {
-    /*margin: 0;
-    display: table-row;*/
     position: absolute;
     border: 2px solid black;
 }

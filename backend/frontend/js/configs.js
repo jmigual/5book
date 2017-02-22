@@ -16,14 +16,12 @@ $(document).ready(function () {
   var options = {
     activeItem: 0
   };
-  $(".carousel").each(function () {
-    var carousel = $(this).CircularCarousel(options);
 
+  var carouselQui = $("#qui-som-carousel").CircularCarousel(options);
+  $("#qui-som-next").click(function () {
+    carouselQui.cycleActive("next");
   });
-  /*var carousel = $("#qui-som-carousel").CircularCarousel(options);
-   $(".carousel .item").click(function (e) {
-   var index = $(this).index('li');
-   carousel.cycleActiveTo(index);
-   e.preventDefault();
-   })*/
+  $("#qui-som-previous").click(function () {
+    carouselQui.cycleActive("previous");
+  });
 });

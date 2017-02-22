@@ -6,32 +6,16 @@
 
   $.fn.CircularCarousel = function (options) {
 
-    var $ele = $(this);
+    var $ele = $(this),
+        $parEle = $($ele.parent());
     var figures = $ele.children("figure"),
         count = figures.length,
         angleStep = (2*Math.PI)/count,
-        width = $ele.width(),
-        radius = Math.round((width/2)/Math.tan(angleStep/2));
+        width,
+        radius;
         activeItem = options.activeItem;
 
-    console.log(figures);
-    console.log("Width:", width, "Angle Step:", angleStep, "Radius:", radius);
-
-    function drawCarousel() {
-      if (count <= 0)
-        return;
-
-      width = $ele.width();
-      radius = Math.round(width/2) - 1;
-      var imageWidth = 2*radius*Math.cos(angleStep/2);
-
-      $(figures).each(function(i) {
-        var thetaInterior = (360/count)*i;
-        //console.log(this);
-        $ele.css({"transform": "rotateY(" + thetaInterior + "deg) translateZ(" + radius + "px)" });
-        $ele.width(imageWidth);
-      });
-
+    function updateHeight() {
       var $parent = $ele.parent(".carousel-container");
       //console.log($parent);
       $parent.height($(figures[0]).height() + 50);
@@ -43,6 +27,28 @@
 
       var theta = 360/count*(activeItem);
       $ele.css("transform", "translateZ(" + (-radius) + "px) rotateY(" + theta + "deg)");
+    }
+
+    function drawCarousel() {
+      if (count <= 0)
+        return;
+
+      console.log("Updated");
+      width = $parEle.width();
+      var imageWidth = Math.min(0.9*width, 1200);
+      radius = (imageWidth/2)/(Math.tan(angleStep/2));
+
+      //console.log(figures);
+      console.log("Widths:", width, "Angle Step:", angleStep, "Radius:", radius);
+
+      $(figures).each(function(i) {
+        var thetaInterior = (360/count)*i;
+        //console.log(this);
+        $(this).css({"transform": "rotateY(" + thetaInterior + "deg) translateZ(" + radius + "px)" });
+        $(this).width(imageWidth);
+        console.log("Image width (" + i + "):", imageWidth)
+      });
+      updateCarousel();
     }
 
     drawCarousel();
@@ -62,6 +68,8 @@
         updateCarousel();
       }
     };
+
+    return methods;
   };
 
 }(jQuery));
