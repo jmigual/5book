@@ -49,12 +49,12 @@
       radius = (imageWidth/2)/(Math.tan(angleStep/2));
 
       //console.log(figures);
-      console.log("Widths:", width, "Angle Step:", angleStep, "Radius:", radius);
+      console.log("Width:", width, "Angle Step:", angleStep, "Radius:", radius);
 
       $(figures).each(function(i) {
         var thetaInterior = (360/count)*i;
         //console.log(this);
-        $(this).css({"transform": "rotateY(" + thetaInterior + "deg) translateZ(" + 0 + "px)" });
+        $(this).css({"transform": "rotateY(" + thetaInterior + "deg) translateZ(" + radius + "px)" });
         $(this).width(imageWidth);
         //console.log("Image width (" + i + "):", imageWidth)
       });
@@ -73,7 +73,6 @@
 
     var methods = {
       cycleActive: function (direction) {
-        console.log("Clicked: " + direction);
         activeItem += ((direction === 'previous')) ? -1 : 1;
         updateCarousel();
       }

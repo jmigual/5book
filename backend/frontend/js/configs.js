@@ -13,10 +13,29 @@ $(document).ready(function () {
     navigation: true
   });
 
-  var options = {
+  /*var options = {
     activeItem: 0
   };
 
+  var carouselQui = $("#qui-som-carousel").CircularCarousel(options);
+  $("#qui-som-next").click(function () {
+    carouselQui.cycleActive("next");
+  });
+  $("#qui-som-previous").click(function () {
+    carouselQui.cycleActive("previous");
+  });*/
+  
+  var options = {
+    ovalWidth: 400,
+    ovalHeight: 50,
+    offsetX: 100,
+    offsetY: 325,
+    angle: 0,
+    activeItem: 0,
+    duration: 350,
+    className: 'item'
+  };
+  
   var carouselQui = $("#qui-som-carousel").CircularCarousel(options);
   $("#qui-som-next").click(function () {
     carouselQui.cycleActive("next");
