@@ -11,3 +11,8 @@ body {
 .carousel > .item {
     border: 2px solid black;
 }
+
+.carousel-container {
+    position: relative;
+    overflow: hidden;
+}

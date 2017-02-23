@@ -27,7 +27,7 @@ $(document).ready(function () {
   
   var options = {
     ovalWidth: 400,
-    ovalHeight: 50,
+    ovalHeight: 100,
     offsetX: 100,
     offsetY: 325,
     angle: 0,
