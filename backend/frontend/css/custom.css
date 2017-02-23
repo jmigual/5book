@@ -2,3 +2,10 @@ body {
     background-color: #2B2B2B;
 }
 
+.carousel {
+    top: -100px;
+}
+
+.carousel .carousel-item {
+    width: 30% !important;
+}

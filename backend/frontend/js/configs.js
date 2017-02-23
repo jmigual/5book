@@ -8,10 +8,17 @@ $(document).ready(function () {
     verticalCentered: false,
     sectionsColor: ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
     loopBottom: true,
-    fitToSection: false,
+    fitToSection: true,
 
     navigation: true
   });
   
-  $("#qui-som-carousel").carousel();
+  var options = {
+    indicators: true,
+    dist: -20,
+    noWrap: false,
+    fullWidth: false,
+  };
+  
+  $("#qui-som-carousel").carousel(options);
 });
