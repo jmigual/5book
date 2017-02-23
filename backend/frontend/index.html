@@ -6,11 +6,16 @@
 
   <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.min.css">
-  <link rel="stylesheet" href="css/jquery.circular-carousel.css">
+  <!--<link rel="stylesheet" href="css/jquery.circular-carousel.css">-->
+  <link rel="stylesheet" href="bower_components/carousel-3d/dist/styles/jquery.carousel-3d.default.css" />
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
   <script src="js/lipsum.js"></script>
+  <script src="bower_components/javascript-detect-element-resize/jquery.resize.js"></script>
+  <script src="bower_components/waitForImages/dist/jquery.waitforimages.js"></script>
+  <script src="bower_components/modernizr/modernizr.js"></script>
+  <script src="bower_components/carousel-3d/dist/jquery.carousel-3d.js" ></script>
 </head>
 <body>
 <div id="fullpage">
@@ -56,31 +61,31 @@
           <p class="wp-center">Joan Marcè</p>
         </figure>
       </div>-->
-      <ul id="qui-som-carousel" class="carousel">
-        <li class="item">
-          <img src="" data-lorem="cats/1/Video Judit" width="600" height="400">
+      <ul id="qui-som-carousel" data-carousel-3d>
+        <div>
+          <img src="img/1.jpg" width="600" height="400">
           <p>Judit Cortés</p>
-        </li>
-        <li class="item">
-          <img src="" data-lorem="cats/2/Video Guille" width="600" height="400">
+        </div>
+        <div>
+          <img src="img/2.jpg" width="600" height="400">
           <p>Guillermo Cueva</p>
-        </li>
-        <li class="item">
-          <img src="" data-lorem="cats/3/Video Joan" width="600" height="400">
-          <p class="wp-center">Joan Marcè</p>
-        </li>
-        <li class="item">
-          <img src="" data-lorem="cats/1/Video Judit" width="600" height="400">
+        </div>
+        <div>
+          <img src="img/3.jpg" width="600" height="400">
+          <p>Joan Marcè</p>
+        </div>
+        <div>
+          <img src="img/1.jpg" width="600" height="400">
           <p>Judit Cortés</p>
-        </li>
-        <li class="item">
-          <img src="" data-lorem="cats/2/Video Guille" width="600" height="400">
+        </div>
+        <div>
+          <img src="img/2.jpg" width="600" height="400">
           <p>Guillermo Cueva</p>
-        </li>
-        <li class="item">
-          <img src="" data-lorem="cats/3/Video Joan" width="600" height="400">
-          <p class="wp-center">Joan Marcè</p>
-        </li>
+        </div>
+        <div>
+          <img src="img/3.jpg" width="600" height="400">
+          <p>Joan Marcè</p>
+        </div>
       </ul>
     </div>
     <div class="w3-container">

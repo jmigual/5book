@@ -25,7 +25,7 @@ $(document).ready(function () {
     carouselQui.cycleActive("previous");
   });*/
   
-  var options = {
+  /*var options = {
     ovalWidth: 400,
     ovalHeight: 100,
     offsetX: 100,
@@ -42,5 +42,5 @@ $(document).ready(function () {
   });
   $("#qui-som-previous").click(function () {
     carouselQui.cycleActive("previous");
-  });
+  });*/
 });
