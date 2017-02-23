@@ -14,10 +14,10 @@ $(document).ready(function () {
   });
   
   var options = {
-    indicators: true,
+    indicators: false,
     dist: -20,
     noWrap: false,
-    fullWidth: false,
+    fullWidth: false
   };
   
   $("#qui-som-carousel").carousel(options);
