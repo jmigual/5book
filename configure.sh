@@ -1,4 +1,4 @@
 OLDP=$PWD
 cd backend/frontend/
-bower install carousel-3d
+bower install
 cd $OLDP
