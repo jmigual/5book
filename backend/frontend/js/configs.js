@@ -13,4 +13,5 @@ $(document).ready(function () {
     navigation: true
   });
   
+  $("#qui-som-carousel").carousel();
 });
