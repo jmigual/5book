@@ -1,18 +1,3 @@
 body {
     background-color: #2B2B2B;
 }
-
-#qui-som-carousel {
-    height: 500px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.carousel > .item {
-    border: 2px solid black;
-}
-
-.carousel-container {
-    position: relative;
-    overflow: hidden;
-}
