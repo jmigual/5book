@@ -3,7 +3,8 @@ body {
 }
 
 .carousel {
-    top: -100px;
+    /*top: -100px;*/
+    margin-top: -100px;
 }
 
 @media (max-width: 450px) {
@@ -38,4 +39,8 @@ body {
     .carousel {
         height: 500px;
     }
+}
+
+#section-biblio .fp-tableCell, #section-who .fp-tableCell {
+    vertical-align: top;
 }

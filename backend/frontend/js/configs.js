@@ -5,10 +5,17 @@
 // Contains all the libraries configurations
 $(document).ready(function () {
   $("#fullpage").fullpage({
-    verticalCentered: false,
+    verticalCentered: true,
     sectionsColor: ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
-    loopBottom: true,
-    fitToSection: true,
+    loopBottom: false,
+    fitToSection: false,
+    paddingTop: 0,
+    sectionSelector: ".fp-section",
+    scrollOverflow: true,
+    scrollOverflowOptions: {
+      mouseWheelSpeed: 100,
+      bounce: false
+    },
 
     navigation: true
   });
@@ -21,4 +28,5 @@ $(document).ready(function () {
   };
   
   $("#qui-som-carousel").carousel(options);
+  $("#carousel-categories").carousel(options);
 });

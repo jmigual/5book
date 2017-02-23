@@ -8,36 +8,65 @@
 
   <!-- Google Icon Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-  <!--<link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.min.css">
-  <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">
+  <link rel="stylesheet" href="bower_components/fullpage.js/dist/jquery.fullpage.min.css">
+  <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.min.css">
   <link rel="stylesheet" href="css/custom.css"/>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/2.9.2/jquery.fullPage.js"></script>
+  <script src="bower_components/jquery/dist/jquery.min.js"></script>
+  <script src="bower_components/fullpage.js/vendors/scrolloverflow.min.js"></script>
+  <script src="bower_components/fullpage.js/dist/jquery.fullpage.min.js"></script>
+  <script src="bower_components/materialize/dist/js/materialize.min.js"></script>
   <script src="js/lipsum.js"></script>
-  <script src="bower_components/materialize/dist/js/materialize.js"></script>
 </head>
 <body>
 <div id="fullpage">
-  <div class="section">
-    <div class="nav-wrapper grey darken-2 center">
+  <div class="fp-section">
+    <div class="w3-container w3-center grey darken-1">
       <h3>5book</h3>
       <p>El llibre de la teva vida</p>
     </div>
   </div>
-  <div class="section">
-    <div class="nav-wrapper grey darken-2 center">
+  <div class="fp-section" id="section-biblio">
+    <div class="w3-container w3-center grey darken-1 ">
       <h3>Biblioteca</h3>
     </div>
+    <div class="container">
+      <div id="carousel-categories" class="carousel">
+        <div class="carousel-item">
+          <div class="card">
+            <div class="card-content">
+              Acció
+              <p><a href="#">Veure més</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="card">
+            <div class="card-content">
+              Aventura
+              <p><a href="#">Veure més</a></p>
+            </div>
+          </div>
+        </div>
+        <div class="carousel-item">
+          <div class="card">
+            <div class="card-content">
+              Suspens
+              <p><a href="#">Veure més</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="section active">
-    <div class="nav-wrapper grey darken-2 center">
+  <div class="fp-section active" id="section-who">
+    <div class="w3-container w3-center grey darken-1">
       <h3>Qui som</h3>
     </div>
     <div class="container">
       <div id="qui-som-carousel" class="carousel">
-        <div class="carousel-item" style="top: 0;">
+        <div class="carousel-item">
           <div class="card">
             <div class="card-image">
               <img src="img/1.jpg" class="responsive-img">
@@ -74,6 +103,7 @@
           </div>
         </div>
       </div>
+      <div data-lorem="4p"></div>
     </div>
   </div>
 </div>
