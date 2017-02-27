@@ -1,4 +1,4 @@
 OLDP=$PWD
-cd backend/frontend/
+cd public/
 bower install
 cd $OLDP
