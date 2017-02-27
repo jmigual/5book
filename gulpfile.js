@@ -1,5 +1,6 @@
-var gulp = require('gulp')
+"use strict";
+var gulp = require('gulp');
 
-gulp.task('default', function() {
+gulp.task('default', function () {
     console.log('Hello world');
 });
