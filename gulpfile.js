@@ -62,7 +62,14 @@ gulp.task('libraries', function (cb) {
     ], cb);
 });
 
-gulp.task('default', ['css', 'scripts', 'html', 'libraries'], function () {
+gulp.task('images', function (cb) {
+    pump([
+        gulp.src('public/img/*'),
+        gulp.dest(destPublic + 'img')
+    ]);
+});
+
+gulp.task('default', ['css', 'scripts', 'html', 'libraries', 'images'], function () {
     debug = debug || false;
 });
 
