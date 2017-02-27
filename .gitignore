@@ -2,6 +2,9 @@
 .idea/
 .idea_modules/
 
+build/
+
+# Module managers
 bower_components/
 node_modules
 
