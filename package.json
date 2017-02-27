@@ -1,0 +1,28 @@
+{
+  "name": "5book",
+  "version": "0.0.1",
+  "description": "Reading made simple",
+  "main": "app.js",
+  "dependencies": {},
+  "devDependencies": {
+    "gulp": "^3.9.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://jmigual@github.com/jmigual/5book.git"
+  },
+  "keywords": [
+    "book",
+    "read",
+    "senses"
+  ],
+  "author": "jmigual",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmigual/5book/issues"
+  },
+  "homepage": "https://github.com/jmigual/5book#readme"
+}
