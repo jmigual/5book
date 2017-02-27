@@ -13,7 +13,7 @@ var destFolder = 'build/';
 var destPublic = destFolder + 'public/';
 var debug = false;
 
-var extraFiles = ['bower_components/fullpage.js/vendors/scrolloverflow.min.js'];
+var extraFiles = [__dirname + '/public/bower_components/fullpage.js/vendors/scrolloverflow.min.js'];
 
 var bowerFiles = mainBowerFiles({
     paths: 'public'
