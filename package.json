@@ -6,14 +6,18 @@
   "dependencies": {},
   "devDependencies": {
     "gulp": "^3.9.1",
+    "gulp-changed": "^2.0.0",
     "gulp-clean": "^0.3.2",
     "gulp-copy": "^1.0.0",
     "gulp-csso": "^2.0.0",
+    "gulp-htmlmin": "^3.0.0",
     "gulp-inject": "^4.2.0",
     "gulp-uglify": "^2.0.1",
     "gulp-util": "latest",
     "main-bower-files": "^2.13.1",
-    "pump": "^1.0.2"
+    "pump": "^1.0.2",
+    "run-sequence": "^1.2.2",
+    "yargs": "latest"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
