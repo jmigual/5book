@@ -17,6 +17,11 @@ var destFolder = 'build/';
 var destPublic = destFolder + 'public/';
 var debug      = false;
 
+var additionalFiles = [
+    'public/css/w3.css',
+    'public/css/custom.css'
+];
+
 function changedFile(name, options) {
     if (options === undefined) options = {};
     options.hasChanged = fileChanged;
@@ -78,11 +83,16 @@ gulp.task('scripts', function (cb) {
 
 gulp.task('html', function (cb) {
     pump([
-        gulp.src('public/*.html'),
+        gulp.src(['public/**/*.html', '!public/bower_components/**/*.html']),
         changedFile(destPublic),
         inject(gulp.src(getBowerFiles(), { read: false }),
             {
                 name    : 'bower',
+                relative: true
+            }),
+        inject(gulp.src(additionalFiles, { read: false }),
+            {
+                name    : 'additional',
                 relative: true
             }),
         htmlmin({
@@ -125,6 +135,6 @@ gulp.task('rebuild', function () {
 
 gulp.task('default', function () {
     debug = argv.type === 'debug';
-    gutil.log(gutil.colors.green('Running in ' + (debug ? 'debug' : 'release') + ' mode'));
+    gutil.log(gutil.colors.green('Building in ' + (debug ? 'debug' : 'release') + ' mode'));
     gulp.start(['css', 'scripts', 'html', 'libraries', 'images']);
 }); 
