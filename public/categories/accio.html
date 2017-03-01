@@ -18,18 +18,27 @@
   <link rel="stylesheet" href="../css/custom.css"/>
   <!-- endinject -->
 
-  <!-- bower:js -->
-  <script src="../bower_components/jquery/dist/jquery.min.js"></script>
-  <script src="../bower_components/fullpage.js/vendors/scrolloverflow.js"></script>
-  <script src="../bower_components/fullpage.js/dist/jquery.fullpage.js"></script>
-  <script src="../bower_components/materialize/dist/js/materialize.js"></script>
-  <!-- endinject -->
-
   <script src="../js/lipsum.js"></script>
 </head>
 <body>
-<div class="w3-container">
-  
+<div id="book-table" class="w3-container">
+
 </div>
+<!-- Javascript libraries -->
+<!-- bower:js -->
+<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+<script src="../bower_components/fullpage.js/vendors/scrolloverflow.js"></script>
+<script src="../bower_components/fullpage.js/dist/jquery.fullpage.js"></script>
+<script src="../bower_components/materialize/dist/js/materialize.js"></script>
+<script src="../bower_components/jquery-csv/src/jquery.csv.js"></script>
+<!-- endinject -->
+
+<script src="../js/booksViewer.js"></script>
+
+<script>
+$(document).ready(function() {
+    $("#book-table").BookView();
+});
+</script>
 </body>
 </html>

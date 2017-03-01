@@ -9,23 +9,16 @@
   <!-- Google Icon Font -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
-  <!-- bower:css -->
-  <link rel="stylesheet" href="bower_components/fullpage.js/dist/jquery.fullpage.css">
-  <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.css">
-  <!-- endinject -->
-
   <!-- additional:css -->
   <link rel="stylesheet" href="css/w3.css">
   <link rel="stylesheet" href="css/custom.css"/>
   <!-- endinject -->
   
-  <!-- bower:js -->
-  <script src="bower_components/jquery/dist/jquery.js"></script>
-  <script src="bower_components/fullpage.js/vendors/scrolloverflow.js"></script>
-  <script src="bower_components/fullpage.js/dist/jquery.fullpage.js"></script>
-  <script src="bower_components/materialize/dist/js/materialize.js"></script>
+  <!-- bower:css -->
+  <link rel="stylesheet" href="bower_components/fullpage.js/dist/jquery.fullpage.css">
+  <link rel="stylesheet" href="bower_components/materialize/dist/css/materialize.css">
   <!-- endinject -->
-  
+
   <script src="js/lipsum.js"></script>
 </head>
 <body>
@@ -46,7 +39,7 @@
           <div class="card">
             <div class="card-content">
               Acció
-              <p><a href="#">Veure més</a></p>
+              <p><a href="categories/accio.html">Veure més</a></p>
             </div>
           </div>
         </div>
@@ -116,6 +109,45 @@
     </div>
   </div>
 </div>
-<script src="js/configs.js"></script>
+<!-- Javascript libraries -->
+<!-- bower:js -->
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/fullpage.js/vendors/scrolloverflow.js"></script>
+<script src="bower_components/fullpage.js/dist/jquery.fullpage.js"></script>
+<script src="bower_components/materialize/dist/js/materialize.js"></script>
+<!-- endinject -->
+
+<script>
+// Contains all the libraries configurations
+$(document).ready(function () {
+    $("#fullpage").fullpage({
+        verticalCentered     : true,
+        sectionsColor        : ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
+        loopBottom           : false,
+        fitToSection         : false,
+        paddingTop           : 0,
+        sectionSelector      : ".fp-section",
+        scrollOverflow       : true,
+        scrollOverflowOptions: {
+            mouseWheelSpeed: 100,
+            bounce         : false
+        },
+        
+        navigation: true
+    });
+    
+    var options = {
+        indicators: false,
+        dist      : -20,
+        noWrap    : false,
+        fullWidth : false
+    };
+    
+    $("#qui-som-carousel").carousel(options);
+    $("#carousel-categories").carousel(options);
+    
+    
+});
+</script>
 </body>
 </html>
