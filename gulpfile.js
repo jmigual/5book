@@ -7,18 +7,31 @@ var csso           = require('gulp-csso');
 var inject         = require('gulp-inject');
 var mainBowerFiles = require('main-bower-files');
 var clean          = require('gulp-clean');
-var gulpCopy       = require('gulp-copy');
 var changed        = require('gulp-changed');
 var runSequence    = require('run-sequence');
 var htmlmin        = require('gulp-htmlmin');
 var argv           = require('yargs').argv;
+var fs             = require('fs');
 
 var destFolder = 'build/';
 var destPublic = destFolder + 'public/';
 var debug      = false;
 
+function changedFile(name, options) {
+    if (options === undefined) options = {};
+    options.hasChanged = fileChanged;
+    return changed(name, options);
+}
+
 function fileChanged(stream, callback, sourceFile, destPath) {
-    return changed.compareLastModifiedTime(stream, callback, sourceFile, destPath);
+    changed.compareLastModifiedTime(stream, callback, sourceFile, destPath);
+    
+    //console.log("File  : " + destPath);
+    //console.log("Exists: " + fs.existsSync(destPath));
+    if (!fs.existsSync(destPath)) {
+        stream.push(sourceFile);
+        gutil.log("Pushed " + gutil.colors.magenta(destPath.replace(__dirname + "/", "")));
+    }
 }
 
 function getBowerFiles() {
@@ -27,9 +40,9 @@ function getBowerFiles() {
         overrides: {
             'fullpage.js': {
                 main: [
-                    debug ? 'vendors/scrolloverflow.min.js' : 'vendors/scrolloverflow.js',
-                    debug ? 'dist/jquery.fullpage.min.js' : 'dist/jquery.fullpage.js',
-                    debug ? 'dist/jquery.fullpage.min.css' : 'dist/jquery.fullpage.css'
+                    debug ? 'vendors/scrolloverflow.js' : 'vendors/scrolloverflow.min.js',
+                    debug ? 'dist/jquery.fullpage.js' : 'dist/jquery.fullpage.min.js',
+                    debug ? 'dist/jquery.fullpage.css' : 'dist/jquery.fullpage.min.css'
                 ]
             }
         }
@@ -41,7 +54,7 @@ gulp.task('css', function (cb) {
     
     pump([
         gulp.src('public/css/*.css'),
-        changed(destCSS),
+        changedFile(destCSS),
         csso({
             restructure: !debug,
             sourceMap  : debug
@@ -55,7 +68,7 @@ gulp.task('scripts', function (cb) {
     
     pump([
         gulp.src('public/js/*.js'),
-        changed(destJs),
+        changedFile(destJs),
         uglify({
             preserveComments: 'license'
         }),
@@ -66,7 +79,7 @@ gulp.task('scripts', function (cb) {
 gulp.task('html', function (cb) {
     pump([
         gulp.src('public/*.html'),
-        changed(destPublic, { hasChanged: fileChanged }),
+        changedFile(destPublic),
         inject(gulp.src(getBowerFiles(), { read: false }),
             {
                 name    : 'bower',
@@ -80,12 +93,12 @@ gulp.task('html', function (cb) {
 });
 
 gulp.task('libraries', function (cb) {
-    var destLib = destPublic + 'bower_components';
+    var destLib = destPublic + 'bower_components/';
     
     pump([
-        gulp.src(getBowerFiles(), { read: false }),
-        changed(destLib),
-        gulpCopy(destLib, { prefix: 2 })
+        gulp.src(getBowerFiles()),
+        changedFile(destLib),
+        gulp.dest(destLib)
     ], cb);
 });
 
@@ -93,8 +106,8 @@ gulp.task('images', function (cb) {
     var destImg = destPublic + 'img';
     
     pump([
-        gulp.src('public/img/*', { read: false }),
-        changed(destImg),
+        gulp.src('public/img/*'),
+        changedFile(destImg),
         gulp.dest(destImg)
     ], cb);
 });
@@ -114,4 +127,4 @@ gulp.task('default', function () {
     debug = argv.type === 'debug';
     gutil.log(gutil.colors.green('Running in ' + (debug ? 'debug' : 'release') + ' mode'));
     gulp.start(['css', 'scripts', 'html', 'libraries', 'images']);
-});
+}); 
