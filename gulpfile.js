@@ -29,14 +29,14 @@ function changedFile(name, options) {
     return changed(name, options);
 }
 
-function fileChanged(stream, callback, sourceFile, destPath) {
+function fileChanged(stream, callback, sourceFile, destPath) {    
     changed.compareLastModifiedTime(stream, callback, sourceFile, destPath);
     
     //console.log("File  : " + destPath);
     //console.log("Exists: " + fs.existsSync(destPath));
     if (!fs.existsSync(destPath)) {
         stream.push(sourceFile);
-        gutil.log("Pushed " + gutil.colors.magenta(destPath.replace(__dirname + "/", "")));
+        gutil.log("Pushed " + gutil.colors.magenta(sourceFile.path.replace(__dirname + "/", "")));
     }
 }
 
@@ -109,7 +109,7 @@ gulp.task('libraries', function (cb) {
     
     pump([
         gulp.src(getBowerFiles()),
-        changedFile(destLib),
+        //gulp.dest(destLib)
         gulpCopy(destLib, { prefix: 2 })
     ], cb);
 });
