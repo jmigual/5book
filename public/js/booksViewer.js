@@ -20,6 +20,12 @@
         function addElements(data) {
             console.log(data);
         }
+        
+        return {
+            warn: function() {
+                console.log("Hello world");
+            }
+        };
     }
     
-});
+})(jQuery);

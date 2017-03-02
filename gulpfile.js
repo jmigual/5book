@@ -104,13 +104,12 @@ gulp.task('html', function (cb) {
 });
 
 gulp.task('libraries', function (cb) {
-    var destLib = destPublic + 'bower_components/';
     console.log(getBowerFiles());
     
     pump([
         gulp.src(getBowerFiles()),
         //gulp.dest(destLib)
-        gulpCopy(destLib, { prefix: 2 })
+        gulpCopy(destPublic, { prefix: 1 })
     ], cb);
 });
 
