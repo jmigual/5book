@@ -10,10 +10,12 @@
         }, options);
         
         var $elem = $(this);
+        var file = '../data/' + opts.type + '.csv';
         
         // We load first all the elements in JSON and then 
         // add them one by one to the HTML
-        $.get('../data/' + opts.type, function(data) {
+        console.log("Loading: " + file);
+        $.get(file, function(data) {
             addElements($.csv.toObjects(data));
         });
         

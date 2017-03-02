@@ -55,6 +55,13 @@ function getBowerFiles() {
     });
 }
 
+gulp.task('data', function (cb) {
+    pump([
+        gulp.src('public/data/*'),
+        gulp.dest(destPublic + 'data')
+    ], cb);
+});
+
 gulp.task('css', function (cb) {
     var destCSS = destPublic + 'css';
     
@@ -137,5 +144,5 @@ gulp.task('rebuild', function () {
 gulp.task('default', function () {
     debug = argv.type === 'debug';
     gutil.log(gutil.colors.green('Building in ' + (debug ? 'debug' : 'release') + ' mode'));
-    gulp.start(['css', 'scripts', 'html', 'libraries', 'images']);
+    gulp.start(['css', 'scripts', 'html', 'libraries', 'images', 'data']);
 }); 
