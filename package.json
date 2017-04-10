@@ -17,7 +17,8 @@
     "main-bower-files": "^2.13.1",
     "pump": "^1.0.2",
     "run-sequence": "^1.2.2",
-    "yargs": "latest"
+    "yargs": "latest",
+    "gulp-sourcemaps": "latest"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

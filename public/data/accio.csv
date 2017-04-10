@@ -1,4 +1,4 @@
-hola;prova; 'cosa molt xunga amb espais';cosa xunga 1 amb espais també;12345;
-hola;prova; 'cosa molt xunga amb espais';cosa xunga 2 amb espais també;12345;
-hola;prova; 'cosa molt xunga amb espais';cosa xunga 3 amb espais també;12345;
-hola;prova; 'cosa molt xunga amb espais';cosa xunga 4 amb espais també;12345;
+name;description;imagePath
+Els tres porquets;Un dels contes més clàssics per a nens, tres germans s'embarquen en una aventura per fer-se més independents;els_tres_porquets.png
+Els jocs de la fam;Una aventura de supervivència;els_jocs_de_la_fam.png
+

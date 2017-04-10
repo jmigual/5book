@@ -13,6 +13,7 @@ var runSequence    = require('run-sequence');
 var htmlmin        = require('gulp-htmlmin');
 var argv           = require('yargs').argv;
 var fs             = require('fs');
+var sourcemaps     = require('gulp-sourcemaps');
 
 var destFolder = 'build/';
 var destPublic = destFolder + 'public/';
@@ -29,7 +30,7 @@ function changedFile(name, options) {
     return changed(name, options);
 }
 
-function fileChanged(stream, callback, sourceFile, destPath) {    
+function fileChanged(stream, callback, sourceFile, destPath) {
     changed.compareLastModifiedTime(stream, callback, sourceFile, destPath);
     
     //console.log("File  : " + destPath);
@@ -81,10 +82,15 @@ gulp.task('scripts', function (cb) {
     
     pump([
         gulp.src('public/js/*.js'),
+        sourcemaps.init(),
         changedFile(destJs),
         uglify({
             preserveComments: 'license'
         }),
+        sourcemaps.write("./maps", {
+            sourceMappingURL: function(file) {
+                return "5book/build/public/maps/" + file.relative + ".map";
+            }}),
         gulp.dest(destJs)
     ], cb);
 });
@@ -111,8 +117,6 @@ gulp.task('html', function (cb) {
 });
 
 gulp.task('libraries', function (cb) {
-    console.log(getBowerFiles());
-    
     pump([
         gulp.src(getBowerFiles()),
         //gulp.dest(destLib)
