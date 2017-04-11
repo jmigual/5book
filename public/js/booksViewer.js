@@ -4,7 +4,7 @@
 
 (function($) {
     
-    $.fn.BookView = function(options) {
+    $.fn.BookView = function(options)  {
         var opts = $.extend({
             type: ""
         }, options);
