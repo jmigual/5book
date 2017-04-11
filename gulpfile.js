@@ -81,7 +81,7 @@ gulp.task('scripts', function (cb) {
     var destJs = destPublic + 'js';
     
     pump([
-        gulp.src('public/js/*.js'),
+        gulp.src('public/js/**/*.js'),
         sourcemaps.init(),
         changedFile(destJs),
         uglify({
