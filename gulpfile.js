@@ -14,6 +14,7 @@ var htmlmin        = require('gulp-htmlmin');
 var argv           = require('yargs').argv;
 var fs             = require('fs');
 var sourcemaps     = require('gulp-sourcemaps');
+var babel          = require('gulp-babel');
 
 var destFolder = 'build/';
 var destPublic = destFolder + 'public/';
@@ -84,13 +85,11 @@ gulp.task('scripts', function (cb) {
         gulp.src('public/js/**/*.js'),
         sourcemaps.init(),
         changedFile(destJs),
+        babel({ presets: ['es2016'] }),
         uglify({
             preserveComments: 'license'
         }),
-        sourcemaps.write("./maps", {
-            sourceMappingURL: function(file) {
-                return "5book/build/public/maps/" + file.relative + ".map";
-            }}),
+        sourcemaps.write("."),
         gulp.dest(destJs)
     ], cb);
 });

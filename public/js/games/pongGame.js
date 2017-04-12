@@ -27,20 +27,25 @@ window.requestAnimationFrame = (function () {
         
         // Configure renderer
         var renderer = PIXI.autoDetectRenderer(800, 600),
-            stage    = new PIXI.Container();
+            stage    = new Container();
         
         $(this).html(renderer.view);
         renderer.view.style.border = "1px dashed black";
         
         // Images for sprites
-        var images = ["brick.png", "brick_half.png", "brick_gray.png",
-            "brick_gray_half.png", "brick_gray_border.png", "brick_gray_half_border.png", "ball.png"]
-            .map(function (img) {
-                return { name: img, url: imgPath + img }
-            });
+        var images = [
+            "brick.png",
+            "brick_half.png",
+            "brick_gray.png",
+            "brick_gray_half.png",
+            "brick_gray_border.png",
+            "brick_gray_half_border.png",
+            "ball.png"
+        ].map(function (img) {
+            return { name: img, url: imgPath + img }
+        });
         
-        loader
-            .add(images)
+        loader.add(images)
             .on("progress", loadProgressHandler)
             .load(setup);
         
@@ -79,22 +84,22 @@ window.requestAnimationFrame = (function () {
             
             for (var i = 0; i < HOME_ROWS; ++i) {
                 var bLine  = [];
-                var xshift = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
-                var ypos   = renderer.height - BRICK_HEIGHT*(i + 1);
+                var xShift = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
+                var yPos   = renderer.height - BRICK_HEIGHT*(i + 1);
                 if (i%2 !== 0) {
                     // Create half brick now;
                     
-                    var brickHead = new GameBrick("_half", xshift, ypos, BRICK_WIDTH/2);
-                    xshift += BRICK_WIDTH/2;
+                    var brickHead = new GameBrick("_half", xShift, yPos, BRICK_WIDTH/2);
+                    xShift += BRICK_WIDTH/2;
                     bLine.push(brickHead);
                 }
                 for (var j = 0; j < HOME_COLUMNS - i%2; ++j) {
-                    var brick = new GameBrick("", BRICK_WIDTH*j + xshift, ypos);
+                    var brick = new GameBrick("", BRICK_WIDTH*j + xShift, yPos);
                     bLine.push(brick);
                 }
                 if (i%2 !== 0) {
-                    var xpos      = (HOME_COLUMNS - 1)*BRICK_WIDTH + xshift;
-                    var brickTail = new GameBrick("_half", xpos, ypos, BRICK_WIDTH/2);
+                    var xpos      = (HOME_COLUMNS - 1)*BRICK_WIDTH + xShift;
+                    var brickTail = new GameBrick("_half", xpos, yPos, BRICK_WIDTH/2);
                     bLine.push(brickTail);
                 }
                 brickLines.push(bLine);
