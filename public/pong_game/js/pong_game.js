@@ -29,20 +29,22 @@ window.requestAnimationFrame = (function () {
         var renderer = PIXI.autoDetectRenderer(800, 600),
             stage    = new Container();
         
+        var state = play;
+        
         $(this).html(renderer.view);
         renderer.view.style.border = "1px dashed black";
         
         // Images for sprites
         var images = [
-            "brick.png",
-            "brick_half.png",
-            "brick_gray.png",
-            "brick_gray_half.png",
-            "brick_gray_border.png",
-            "brick_gray_half_border.png",
-            "ball.png"
+            "brick",
+            "brick_half",
+            "brick_gray",
+            "brick_gray_half",
+            "brick_gray_border",
+            "brick_gray_half_border",
+            "ball"
         ].map(function (img) {
-            return { name: img, url: imgPath + img }
+            return { name: img, url: imgPath + img + ".png" }
         });
         
         loader.add(images)
@@ -50,14 +52,14 @@ window.requestAnimationFrame = (function () {
             .load(setup);
         
         // Define variables that might be used in more than one function
-        var brickLines;
+        var brickLines, ball;
         
         function GameBrick(name, x, y, width, height) {
             if (typeof(width) === "undefined") width = BRICK_WIDTH;
             if (typeof(height) === "undefined") height = BRICK_HEIGHT;
-            var normalName     = "brick" + name + ".png";
-            var grayName       = "brick_gray" + name + ".png";
-            var grayBorderName = "brick_gray" + name + "_border.png";
+            var normalName     = "brick" + name;
+            var grayName       = "brick_gray" + name;
+            var grayBorderName = "brick_gray" + name + "_border";
             
             var brick    = new Sprite(resources[grayName].texture);
             brick.x      = x;
@@ -103,6 +105,8 @@ window.requestAnimationFrame = (function () {
                     bLine.push(brickTail);
                 }
                 brickLines.push(bLine);
+                
+                gameLoop();
             }
             
             for (var i = 0; i < brickLines.length; ++i) {
@@ -115,6 +119,16 @@ window.requestAnimationFrame = (function () {
                     }
                 }
             }
+            
+            // Add ball to the top center of the screen
+            ball = new Sprite(resources["ball"].texture);
+            ball.x = renderer.width/2;
+            ball.y = 10;
+            ball.width = 20;
+            ball.height = 20;
+            
+            stage.addChild(ball);
+            
             renderer.render(stage);
             console.log("Setup finished");
         }
@@ -122,6 +136,22 @@ window.requestAnimationFrame = (function () {
         function loadProgressHandler(loader, resource) {
             console.log("Loading : " + resource.url);
             console.log("Progress: " + loader.progress + "%");
+        }
+        
+        function gameLoop() {
+            // Loop this function at 60 frames per second
+            requestAnimationFrame(gameLoop);
+            
+            // Update the current game state
+            state();
+            
+            // Render the stage to see the animation
+            renderer.render(stage);
+        }
+        
+        
+        function play() {
+            
         }
     }
 }(jQuery));
