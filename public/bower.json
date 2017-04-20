@@ -26,6 +26,6 @@
     "datatables.net-dt": "^3.2.2",
     "jquery-csv": "^0.8.2",
     "papaparse": "^4.2.0",
-    "pixi.js": "^4.5.0"
+    "pixi.js": "4.4.4"
   }
 }

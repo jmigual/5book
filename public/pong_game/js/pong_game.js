@@ -23,7 +23,7 @@ window.requestAnimationFrame = (function () {
               HOME_COLUMNS = 10,
               BRICK_WIDTH  = 40,
               BRICK_HEIGHT = 20,
-              imgPath      = "../img/games/pong/"; // Base path for the images
+              imgPath      = "img/"; // Base path for the images
         
         // Configure renderer
         var renderer = PIXI.autoDetectRenderer(800, 600),
