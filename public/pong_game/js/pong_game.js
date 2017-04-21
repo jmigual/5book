@@ -23,13 +23,17 @@ window.requestAnimationFrame = (function () {
               HOME_COLUMNS = 10,
               BRICK_WIDTH  = 40,
               BRICK_HEIGHT = 20,
-              imgPath      = "img/"; // Base path for the images
+              imgPath      = "img/", // Base path for the images,
+              GAME_MODES   = {
+                  PLAYING       : 1,
+                  MAIN_MENU     : 2,
+                  FINISHED_WON  : 3,
+                  FINISHED_LOOSE: 4
+              };
         
         // Configure renderer
         var renderer = PIXI.autoDetectRenderer(800, 600),
             stage    = new Container();
-        
-        var state = play;
         
         $(this).html(renderer.view);
         renderer.view.style.border = "1px dashed black";
@@ -53,6 +57,11 @@ window.requestAnimationFrame = (function () {
         
         // Define variables that might be used in more than one function
         var brickLines, ball, counter = 1, lastTime = 0;
+        
+        var playerData = {
+            mode           : GAME_MODES.PLAYING,
+            remaining_lives: 3
+        };
         
         function GameBall() {
             var sprite    = new Sprite(resources["ball"].texture);
@@ -157,11 +166,18 @@ window.requestAnimationFrame = (function () {
             var deltaTime = newTime - lastTime;
             lastTime      = newTime;
             
-            // Update the current game state
-            state(deltaTime);
+            
+            if (playerData.mode === GAME_MODES.PLAYING) {
+                // Update the current game state
+                play(deltaTime);
+            } else if (playerData.mode === GAME_MODES.MAIN_MENU) {
+            
+            } else if (playerData.mode === GAME_MODES.FINISHED_WON) {
+            
+            } else if (playerData.mode === GAME_MODES)
             
             // Render the stage to see the animation
-            renderer.render(stage);
+                renderer.render(stage);
             ++counter;
         }
         
@@ -169,6 +185,21 @@ window.requestAnimationFrame = (function () {
         function play(deltaTime) {
             console.log((1000/deltaTime).toFixed(2) + " fps");
             ball.update();
+        }
+        
+        // This function has to show the different options and the button showing 'play'
+        function mainMenu(deltaTime) {
+        
+        }
+        
+        // Has to show the text saying the player that it has won
+        function finished_win(deltaTime) {
+        
+        }
+        
+        // Has to show the text to finish and loose
+        function finished_loose(deltaTime) {
+            
         }
     }
 }(jQuery));
