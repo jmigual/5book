@@ -52,7 +52,26 @@ window.requestAnimationFrame = (function () {
             .load(setup);
         
         // Define variables that might be used in more than one function
-        var brickLines, ball;
+        var brickLines, ball, counter = 1, lastTime = 0;
+        
+        function GameBall() {
+            var sprite    = new Sprite(resources["ball"].texture);
+            sprite.x      = renderer.width/2;
+            sprite.y      = 10;
+            sprite.width  = 20;
+            sprite.height = 20;
+            
+            this.velocity = { x: 1, y: 2 };
+            
+            this.sprite = function () {
+                return sprite;
+            };
+            
+            this.update = function () {
+                sprite.x += this.velocity.x;
+                sprite.y += this.velocity.y;
+            };
+        }
         
         function GameBrick(name, x, y, width, height) {
             if (typeof(width) === "undefined") width = BRICK_WIDTH;
@@ -105,8 +124,6 @@ window.requestAnimationFrame = (function () {
                     bLine.push(brickTail);
                 }
                 brickLines.push(bLine);
-                
-                gameLoop();
             }
             
             for (var i = 0; i < brickLines.length; ++i) {
@@ -121,16 +138,11 @@ window.requestAnimationFrame = (function () {
             }
             
             // Add ball to the top center of the screen
-            ball = new Sprite(resources["ball"].texture);
-            ball.x = renderer.width/2;
-            ball.y = 10;
-            ball.width = 20;
-            ball.height = 20;
+            ball = new GameBall();
+            stage.addChild(ball.sprite());
             
-            stage.addChild(ball);
-            
-            renderer.render(stage);
             console.log("Setup finished");
+            gameLoop(0);
         }
         
         function loadProgressHandler(loader, resource) {
@@ -138,20 +150,25 @@ window.requestAnimationFrame = (function () {
             console.log("Progress: " + loader.progress + "%");
         }
         
-        function gameLoop() {
+        function gameLoop(newTime) {
             // Loop this function at 60 frames per second
             requestAnimationFrame(gameLoop);
             
+            var deltaTime = newTime - lastTime;
+            lastTime      = newTime;
+            
             // Update the current game state
-            state();
+            state(deltaTime);
             
             // Render the stage to see the animation
             renderer.render(stage);
+            ++counter;
         }
         
         
-        function play() {
-            
+        function play(deltaTime) {
+            console.log((1000/deltaTime).toFixed(2) + " fps");
+            ball.update();
         }
     }
 }(jQuery));
