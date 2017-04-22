@@ -57,7 +57,7 @@ window.requestAnimationFrame = (function () {
             .load(setup);
         
         // Define variables that might be used in more than one function
-        var brickLines, ball, counter = 1, lastTime;
+        var brickLines, ball, counter = 1, lastTime, world;
         
         var playerData = {
             mode           : GAME_MODES.PLAYING,
@@ -65,45 +65,66 @@ window.requestAnimationFrame = (function () {
         };
         
         function setup() {
+            world = new p2.World({ gravity: [0, 0] });
+            var cM = world.defaultContactMaterial;
+            cM.restitution = 1;
+            
             brickLines = [];
+            
+            var xShift0 = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
+            var bWidth  = (HOME_COLUMNS - 0.5)*BRICK_WIDTH;
             
             for (var i = 0; i < HOME_ROWS; ++i) {
                 var bLine  = [];
-                var xShift = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
+                var xShift = xShift0 + (i%2 === 0 ? 0 : BRICK_WIDTH/2);
                 var yPos   = renderer.height - BRICK_HEIGHT*(i + 1);
                 if (i%2 !== 0) {
-                    // Create half brick now;
-                    
-                    var brickHead = new GameBrick("_half", xShift, yPos, BRICK_WIDTH/2);
-                    xShift += BRICK_WIDTH/2;
-                    bLine.push(brickHead);
+                    // Create half bricks;
+                    bLine.push(new GameBrick("_half", xShift0, yPos, BRICK_WIDTH/2)); // Head
+                    bLine.push(new GameBrick("_half", xShift0 + bWidth, yPos, BRICK_WIDTH/2));   // Tail
                 }
                 for (var j = 0; j < HOME_COLUMNS - i%2; ++j) {
-                    var brick = new GameBrick("", BRICK_WIDTH*j + xShift, yPos);
-                    bLine.push(brick);
-                }
-                if (i%2 !== 0) {
-                    var xpos      = (HOME_COLUMNS - 1)*BRICK_WIDTH + xShift;
-                    var brickTail = new GameBrick("_half", xpos, yPos, BRICK_WIDTH/2);
-                    bLine.push(brickTail);
+                    bLine.push(new GameBrick("", BRICK_WIDTH*j + xShift, yPos));
                 }
                 brickLines.push(bLine);
             }
             
+            // Add the sprites to the stage
             for (var i = 0; i < brickLines.length; ++i) {
                 for (var j = 0; j < brickLines[i].length; ++j) {
                     stage.addChild(brickLines[i][j].sprite());
+                    world.addBody(brickLines[i][j].body());
                 }
-                if (i === 0) {
-                    for (var j = 0; j < brickLines[i].length; ++j) {
-                        brickLines[i][j].toBorder();
-                    }
+                if (i === 0) for (var j = 0; j < brickLines[i].length; ++j) {
+                    brickLines[i][j].toBorder();
                 }
             }
             
             // Add ball to the top center of the screen
             ball = new GameBall();
             stage.addChild(ball.sprite());
+            world.addBody(ball.body());
+            
+            
+            // Bottom
+            var planeBody = new p2.Body({ position: [0, renderer.height], angle: Math.PI });
+            planeBody.addShape(new p2.Plane());
+            world.addBody(planeBody);
+            
+            // Top 
+            planeBody = new p2.Body({ position: [0, 0], angle: 0 });
+            planeBody.addShape(new p2.Plane());
+            world.addBody(planeBody);
+            
+            // Left
+            planeBody = new p2.Body({ position: [0, 0], angle: -Math.PI/2 });
+            planeBody.addShape(new p2.Plane());
+            world.addBody(planeBody);
+    
+            // Right
+            planeBody = new p2.Body({ position: [renderer.width, 0], angle: Math.PI/2 });
+            planeBody.addShape(new p2.Plane());
+            world.addBody(planeBody);
             
             console.log("Setup finished");
             gameLoop(0);
@@ -119,41 +140,42 @@ window.requestAnimationFrame = (function () {
             requestAnimationFrame(gameLoop);
             
             var deltaTime = lastTime ? time - lastTime : 0;
-    
-    
+            deltaTime /= 1000;
+            
             if (playerData.mode === GAME_MODES.PLAYING) {
                 // Update the current game state
                 play(deltaTime);
             } else if (playerData.mode === GAME_MODES.MAIN_MENU) {
-    
+                
             } else if (playerData.mode === GAME_MODES.FINISHED_WON) {
-    
+                
             } else if (playerData.mode === GAME_MODES.FINISHED_LOOSE) {
-    
+                
             }
-    
+            
             // Render the stage to see the animation
-                renderer.render(stage);
+            renderer.render(stage);
             ++counter;
-            lastTime      = time;
+            lastTime = time;
         }
         
+        /////////////////////////
+        // MAIN LOOP FUNCTIONS //
+        /////////////////////////
         
         function play(deltaTime) {
-            console.log((1000/deltaTime).toFixed(2) + " fps");
+            world.step(TIME_STEP, deltaTime);
             ball.update();
-            
-            // Check collision between the ball and the blocks
         }
         
         // This function has to show the different options and the button showing 'play'
         function mainMenu(deltaTime) {
-        
+            
         }
         
         // Has to show the text saying the player that it has won
         function finished_win(deltaTime) {
-        
+            
         }
         
         // Has to show the text to finish and loose
