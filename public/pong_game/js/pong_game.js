@@ -64,52 +64,6 @@ window.requestAnimationFrame = (function () {
             remaining_lives: 3
         };
         
-        function GameBall() {
-            var sprite    = new Sprite(resources["ball"].texture);
-            sprite.x      = renderer.width/2;
-            sprite.y      = 10;
-            sprite.width  = 20;
-            sprite.height = 20;
-            
-            this.velocity = { x: 1, y: 2 };
-            
-            this.sprite = function () {
-                return sprite;
-            };
-            
-            this.update = function () {
-                sprite.x += this.velocity.x;
-                sprite.y += this.velocity.y;
-            };
-        }
-        
-        function GameBrick(name, x, y, width, height) {
-            if (typeof(width) === "undefined") width = BRICK_WIDTH;
-            if (typeof(height) === "undefined") height = BRICK_HEIGHT;
-            var normalName     = "brick" + name;
-            var grayName       = "brick_gray" + name;
-            var grayBorderName = "brick_gray" + name + "_border";
-            
-            var brick    = new Sprite(resources[grayName].texture);
-            brick.x      = x;
-            brick.y      = y;
-            brick.width  = width;
-            brick.height = height;
-            
-            this.sprite   = function () {
-                return brick;
-            };
-            this.toBorder = function () {
-                brick.texture = resources[grayBorderName].texture;
-            };
-            this.toNormal = function () {
-                brick.texture = resources[normalName].texture;
-            };
-            this.toGray   = function () {
-                brick.texture = resources[grayName].texture;
-            };
-        }
-        
         function setup() {
             brickLines = [];
             
@@ -205,6 +159,87 @@ window.requestAnimationFrame = (function () {
         // Has to show the text to finish and loose
         function finished_loose(deltaTime) {
             
+        }
+        
+        /////////////////////////
+        // OBJECTS DEFINITIONS //
+        /////////////////////////
+        
+        
+        function GameBall() {
+            var width  = 20,
+                height = 20;
+            
+            var body = new p2.Body({
+                position         : [renderer.width/2, 10],
+                collisionResponse: true,
+                type             : p2.Body.DYNAMIC,
+                velocity         : [20, 150],
+                mass             : 1
+            });
+            body.addShape(new p2.Circle({ radius: (width + height)/4 }));
+            body.damping = 0;
+            body.angularDamping = 0;
+            
+            var sprite    = new Sprite(resources["ball"].texture);
+            sprite.x      = body.position[0];
+            sprite.y      = body.position[1];
+            sprite.width  = width;
+            sprite.height = height;
+            sprite.pivot.x = width/2;
+            sprite.pivot.y = height/2;
+            sprite.anchor.x = 0.5;
+            sprite.anchor.y = 0.5;
+            
+            this.sprite = function () {
+                return sprite;
+            };
+            this.body   = function () {
+                return body;
+            };
+            this.update = function () {
+                sprite.x = body.interpolatedPosition[0];
+                sprite.y = body.interpolatedPosition[1];
+                console.log("Ball:", sprite.x.toFixed(2), sprite.y.toFixed(2));
+                console.log("Velocity:", body.velocity);
+            };
+        }
+        
+        function GameBrick(name, x, y, width, height) {
+            if (typeof(width) === "undefined") width = BRICK_WIDTH;
+            if (typeof(height) === "undefined") height = BRICK_HEIGHT;
+            var normalName     = "brick" + name;
+            var grayName       = "brick_gray" + name;
+            var grayBorderName = "brick_gray" + name + "_border";
+            
+            var body = new p2.Body({
+                position         : [x + width/2, y + height/2],
+                collisionResponse: true,
+                type             : p2.Body.STATIC
+            });
+            body.addShape(new p2.Box({ width: width, height: height }));
+            
+            var brick    = new Sprite(resources[grayName].texture);
+            brick.x      = x;
+            brick.y      = y;
+            brick.width  = width;
+            brick.height = height;
+            
+            this.sprite   = function () {
+                return brick;
+            };
+            this.body     = function () {
+                return body;
+            };
+            this.toBorder = function () {
+                brick.texture = resources[grayBorderName].texture;
+            };
+            this.toNormal = function () {
+                brick.texture = resources[normalName].texture;
+            };
+            this.toGray   = function () {
+                brick.texture = resources[grayName].texture;
+            };
         }
     }
 }(jQuery));
