@@ -56,7 +56,7 @@ window.requestAnimationFrame = (function () {
             .load(setup);
         
         // Define variables that might be used in more than one function
-        var brickLines, ball, counter = 1, lastTime = 0;
+        var brickLines, ball, counter = 1, lastTime;
         
         var playerData = {
             mode           : GAME_MODES.PLAYING,
@@ -159,32 +159,36 @@ window.requestAnimationFrame = (function () {
             console.log("Progress: " + loader.progress + "%");
         }
         
-        function gameLoop(newTime) {
+        function gameLoop(time) {
             // Loop this function at 60 frames per second
             requestAnimationFrame(gameLoop);
             
-            var deltaTime = newTime - lastTime;
-            lastTime      = newTime;
-            
-            
+            var deltaTime = lastTime ? time - lastTime : 0;
+    
+    
             if (playerData.mode === GAME_MODES.PLAYING) {
                 // Update the current game state
                 play(deltaTime);
             } else if (playerData.mode === GAME_MODES.MAIN_MENU) {
-            
+    
             } else if (playerData.mode === GAME_MODES.FINISHED_WON) {
-            
-            } else if (playerData.mode === GAME_MODES)
-            
+    
+            } else if (playerData.mode === GAME_MODES.FINISHED_LOOSE) {
+    
+            }
+    
             // Render the stage to see the animation
                 renderer.render(stage);
             ++counter;
+            lastTime      = time;
         }
         
         
         function play(deltaTime) {
             console.log((1000/deltaTime).toFixed(2) + " fps");
             ball.update();
+            
+            // Check collision between the ball and the blocks
         }
         
         // This function has to show the different options and the button showing 'play'

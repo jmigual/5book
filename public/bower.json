@@ -20,12 +20,8 @@
     "tests"
   ],
   "dependencies": {
-    "materialize": "^0.98.0",
-    "fullpage.js": "^2.9.2",
-    "datatables.net": "^2.1.1",
-    "datatables.net-dt": "^3.2.2",
-    "jquery-csv": "^0.8.2",
-    "papaparse": "^4.2.0",
-    "pixi.js": "4.4.4"
+    "pixi.js": "4.4.4",
+    "p2js": "^0.7.1",
+    "jquery": "^3.2.1"
   }
 }
