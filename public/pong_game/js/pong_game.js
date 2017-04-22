@@ -23,7 +23,8 @@ window.requestAnimationFrame = (function () {
               HOME_COLUMNS = 10,
               BRICK_WIDTH  = 40,
               BRICK_HEIGHT = 20,
-              imgPath      = "img/", // Base path for the images,
+              IMG_PATH     = "img/", // Base path for the images,
+              TIME_STEP    = 1/60,
               GAME_MODES   = {
                   PLAYING       : 1,
                   MAIN_MENU     : 2,
@@ -48,7 +49,7 @@ window.requestAnimationFrame = (function () {
             "brick_gray_half_border",
             "ball"
         ].map(function (img) {
-            return { name: img, url: imgPath + img + ".png" }
+            return { name: img, url: IMG_PATH + img + ".png" }
         });
         
         loader.add(images)
