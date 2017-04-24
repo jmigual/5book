@@ -122,7 +122,7 @@ window.requestAnimationFrame = (function () {
             planeBody = new p2.Body({ position: [0, 0], angle: -Math.PI/2 });
             planeBody.addShape(new p2.Plane());
             world.addBody(planeBody);
-    
+            
             // Right
             planeBody = new p2.Body({ position: [renderer.width, 0], angle: Math.PI/2 });
             planeBody.addShape(new p2.Plane());
@@ -202,16 +202,16 @@ window.requestAnimationFrame = (function () {
                 mass             : 1
             });
             body.addShape(new p2.Circle({ radius: (width + height)/4 }));
-            body.damping = 0;
+            body.damping        = 0;
             body.angularDamping = 0;
             
-            var sprite    = new Sprite(resources["ball"].texture);
-            sprite.x      = body.position[0];
-            sprite.y      = body.position[1];
-            sprite.width  = width;
-            sprite.height = height;
-            sprite.pivot.x = width/2;
-            sprite.pivot.y = height/2;
+            var sprite      = new Sprite(resources["ball"].texture);
+            sprite.x        = body.position[0];
+            sprite.y        = body.position[1];
+            sprite.width    = width;
+            sprite.height   = height;
+            sprite.pivot.x  = width/2;
+            sprite.pivot.y  = height/2;
             sprite.anchor.x = 0.5;
             sprite.anchor.y = 0.5;
             
@@ -229,43 +229,75 @@ window.requestAnimationFrame = (function () {
             };
         }
         
-        function GameBrick(name, x, y, width, height) {
-            if (typeof(width) === "undefined") width = BRICK_WIDTH;
-            if (typeof(height) === "undefined") height = BRICK_HEIGHT;
-            var normalName     = "brick" + name;
-            var grayName       = "brick_gray" + name;
-            var grayBorderName = "brick_gray" + name + "_border";
+        var GameBrick = (function() {
+            function GameBrick(name, x, y, width, height) {
+                if (typeof(width) === "undefined") width = BRICK_WIDTH;
+                if (typeof(height) === "undefined") height = BRICK_HEIGHT;
+                var normalName     = "brick" + name;
+                var grayName       = "brick_gray" + name;
+                var grayBorderName = "brick_gray" + name + "_border";
+                
+                GameObject.call(x, y, width, height, grayName);
+                
+                this._body.position = [x + width/2, y + height/2];
+                this._body.addShape(new p2.Box({ width: width, height: height }));
+                
+                this.toBorder = function () {
+                    this._sprite.texture = resources[grayBorderName].texture;
+                };
+                this.toNormal = function () {
+                    this._sprite.texture = resources[normalName].texture;
+                };
+                this.toGray   = function () {
+                    this._sprite.texture = resources[grayName].texture;
+                };
+            }
             
-            var body = new p2.Body({
-                position         : [x + width/2, y + height/2],
+            GameBrick.prototype = Object.create(GameObject.prototype);
+            GameBrick.prototype.constructor = GameBrick;
+            
+            return GameBrick;
+        })();
+        
+        var GameBar = (function () {
+            function GameBar() {
+                GameObject.call(this, 100, 20, 30, 30, "ball");
+                
+                //this._body.addShape(new p2.Box())
+            }
+            
+            GameBar.prototype             = Object.create(GameObject.prototype);
+            GameBar.prototype.constructor = GameBar;
+            
+            return GameBar;
+        })();
+        
+        function GameObject(x, y, width, height, spriteName) {
+            this._geometry = {
+                x     : x,
+                y     : y,
+                width : width,
+                height: height
+            };
+            
+            this._sprite        = new Sprite(resources[spriteName].texture);
+            this._sprite.x      = x;
+            this._sprite.y      = y;
+            this._sprite.width  = width;
+            this._sprite.height = height;
+            
+            this._body = new p2.Body({
+                position         : [x, y],
                 collisionResponse: true,
                 type             : p2.Body.STATIC
             });
-            body.addShape(new p2.Box({ width: width, height: height }));
             
-            var brick    = new Sprite(resources[grayName].texture);
-            brick.x      = x;
-            brick.y      = y;
-            brick.width  = width;
-            brick.height = height;
-            
-            this.sprite   = function () {
-                return brick;
+            this.sprite = function () {
+                return this._sprite;
             };
-            this.body     = function () {
-                return body;
-            };
-            this.toBorder = function () {
-                brick.texture = resources[grayBorderName].texture;
-            };
-            this.toNormal = function () {
-                brick.texture = resources[normalName].texture;
-            };
-            this.toGray   = function () {
-                brick.texture = resources[grayName].texture;
+            this.body   = function () {
+                return this._body;
             };
         }
     }
 }(jQuery));
-
-
