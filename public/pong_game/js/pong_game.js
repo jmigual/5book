@@ -47,7 +47,8 @@ window.requestAnimationFrame = (function () {
             "brick_gray_half",
             "brick_gray_border",
             "brick_gray_half_border",
-            "ball"
+            "ball",
+            "bar"
         ].map(function (img) {
             return { name: img, url: IMG_PATH + img + ".png" }
         });
