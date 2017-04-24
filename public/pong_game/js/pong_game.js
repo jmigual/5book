@@ -66,15 +66,16 @@ window.requestAnimationFrame = (function () {
         };
         
         function setup() {
-            world = new p2.World({ gravity: [0, 0] });
-            var cM = world.defaultContactMaterial;
-            cM.restitution = 1;
+            // Set world properties
+            world          = new p2.World({ gravity: [0, 0] });
+            world.defaultContactMaterial.restitution = 1;
             
             brickLines = [];
             
             var xShift0 = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
             var bWidth  = (HOME_COLUMNS - 0.5)*BRICK_WIDTH;
             
+            // Create bricks wall
             for (var i = 0; i < HOME_ROWS; ++i) {
                 var bLine  = [];
                 var xShift = xShift0 + (i%2 === 0 ? 0 : BRICK_WIDTH/2);
