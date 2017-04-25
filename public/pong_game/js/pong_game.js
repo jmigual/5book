@@ -58,7 +58,7 @@ window.requestAnimationFrame = (function () {
             .load(setup);
         
         // Define variables that might be used in more than one function
-        var brickLines, ball, counter = 1, lastTime, world;
+        var brickLines, ball, counter = 1, lastTime, world, playerBar, gameObjects = [], topBar;
         
         var playerData = {
             mode           : GAME_MODES.PLAYING,
@@ -67,7 +67,7 @@ window.requestAnimationFrame = (function () {
         
         function setup() {
             // Set world properties
-            world          = new p2.World({ gravity: [0, 0] });
+            world                                    = new p2.World({ gravity: [0, 0] });
             world.defaultContactMaterial.restitution = 1;
             
             brickLines = [];
@@ -93,10 +93,11 @@ window.requestAnimationFrame = (function () {
             
             // Add the sprites to the stage
             for (var i = 0; i < brickLines.length; ++i) {
-                for (var j = 0; j < brickLines[i].length; ++j) {
-                    stage.addChild(brickLines[i][j].sprite());
-                    world.addBody(brickLines[i][j].body());
-                }
+                brickLines[i].forEach(function (brick) {
+                    brick.toGray();
+                    stage.addChild(brick.sprite());
+                    world.addBody(brick.body());
+                });
                 if (i === 0) for (var j = 0; j < brickLines[i].length; ++j) {
                     brickLines[i][j].toBorder();
                 }
@@ -106,6 +107,7 @@ window.requestAnimationFrame = (function () {
             ball = new GameBall();
             stage.addChild(ball.sprite());
             world.addBody(ball.body());
+            gameObjects.push(ball);
             
             
             // Bottom
@@ -114,7 +116,7 @@ window.requestAnimationFrame = (function () {
             world.addBody(planeBody);
             
             // Top 
-            planeBody = new p2.Body({ position: [0, 0], angle: 0 });
+            topBar = planeBody = new p2.Body({ position: [0, 0], angle: 0 });
             planeBody.addShape(new p2.Plane());
             world.addBody(planeBody);
             
@@ -127,6 +129,20 @@ window.requestAnimationFrame = (function () {
             planeBody = new p2.Body({ position: [renderer.width, 0], angle: Math.PI/2 });
             planeBody.addShape(new p2.Plane());
             world.addBody(planeBody);
+            
+            // GameBar
+            playerBar = new GameBar();
+            stage.addChild(playerBar.sprite());
+            world.addBody(playerBar.body());
+            gameObjects.push(playerBar);
+            
+            // Configure contacts
+            world.on("beginContact", function (evt) {
+                if ((evt.bodyA === ball.body() || evt.bodyB === ball.body()) &&
+                    (evt.bodyA === topBar || evt.bodyB === topBar)) {
+                    console.log("Game finished");
+                }
+            });
             
             console.log("Setup finished");
             gameLoop(0);
@@ -146,7 +162,7 @@ window.requestAnimationFrame = (function () {
             
             if (playerData.mode === GAME_MODES.PLAYING) {
                 // Update the current game state
-                play(deltaTime);
+                play(deltaTime, time);
             } else if (playerData.mode === GAME_MODES.MAIN_MENU) {
                 
             } else if (playerData.mode === GAME_MODES.FINISHED_WON) {
@@ -165,71 +181,68 @@ window.requestAnimationFrame = (function () {
         // MAIN LOOP FUNCTIONS //
         /////////////////////////
         
-        function play(deltaTime) {
+        function play(deltaTime, time) {
             world.step(TIME_STEP, deltaTime);
-            ball.update();
+            gameObjects.forEach(function (object) {
+                object.update(deltaTime, time);
+            });
         }
         
         // This function has to show the different options and the button showing 'play'
         function mainMenu(deltaTime) {
-            
+        
         }
         
         // Has to show the text saying the player that it has won
         function finished_win(deltaTime) {
-            
+        
         }
         
         // Has to show the text to finish and loose
         function finished_loose(deltaTime) {
-            
+        
         }
+        
+        var GameBall = (function () {
+            
+            function GameBall() {
+                var width  = 20,
+                    height = 20;
+                
+                // Call parent constructor
+                GameObject.call(this, renderer.width/2, 40, width, height, "ball", {
+                    type    : p2.Body.DYNAMIC,
+                    mass    : 1,
+                    velocity: [20, 150]
+                });
+                
+                this._body.addShape(new p2.Circle({ radius: (width + height)/4 }));
+                this._body.damping        = 0;
+                this._body.angularDamping = 0;
+                
+                this._sprite.anchor.x = 0.5;
+                this._sprite.anchor.y = 0.5;
+            }
+            
+            GameBall.prototype             = Object.create(GameObject.prototype);
+            GameBall.prototype.constructor = GameBall;
+            
+            GameBall.prototype.update = function () {
+                this._sprite.x = this._body.interpolatedPosition[0];
+                this._sprite.y = this._body.interpolatedPosition[1];
+                //console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
+                //console.log("Velocity:", this._body.velocity);
+            };
+            
+            return GameBall;
+        })();
+        
         
         /////////////////////////
         // OBJECTS DEFINITIONS //
         /////////////////////////
         
-        
-        function GameBall() {
-            var width  = 20,
-                height = 20;
-            
-            var body = new p2.Body({
-                position         : [renderer.width/2, 10],
-                collisionResponse: true,
-                type             : p2.Body.DYNAMIC,
-                velocity         : [20, 150],
-                mass             : 1
-            });
-            body.addShape(new p2.Circle({ radius: (width + height)/4 }));
-            body.damping        = 0;
-            body.angularDamping = 0;
-            
-            var sprite      = new Sprite(resources["ball"].texture);
-            sprite.x        = body.position[0];
-            sprite.y        = body.position[1];
-            sprite.width    = width;
-            sprite.height   = height;
-            sprite.pivot.x  = width/2;
-            sprite.pivot.y  = height/2;
-            sprite.anchor.x = 0.5;
-            sprite.anchor.y = 0.5;
-            
-            this.sprite = function () {
-                return sprite;
-            };
-            this.body   = function () {
-                return body;
-            };
-            this.update = function () {
-                sprite.x = body.interpolatedPosition[0];
-                sprite.y = body.interpolatedPosition[1];
-                console.log("Ball:", sprite.x.toFixed(2), sprite.y.toFixed(2));
-                console.log("Velocity:", body.velocity);
-            };
-        }
-        
-        var GameBrick = (function() {
+        var GameBrick = (function () {
             function GameBrick(name, x, y, width, height) {
                 if (typeof(width) === "undefined") width = BRICK_WIDTH;
                 if (typeof(height) === "undefined") height = BRICK_HEIGHT;
@@ -237,23 +250,26 @@ window.requestAnimationFrame = (function () {
                 var grayName       = "brick_gray" + name;
                 var grayBorderName = "brick_gray" + name + "_border";
                 
-                GameObject.call(x, y, width, height, grayName);
+                GameObject.call(this, x, y, width, height, grayName);
                 
                 this._body.position = [x + width/2, y + height/2];
                 this._body.addShape(new p2.Box({ width: width, height: height }));
                 
                 this.toBorder = function () {
-                    this._sprite.texture = resources[grayBorderName].texture;
+                    this._body.collisionResponse = true;
+                    this._sprite.texture         = resources[grayBorderName].texture;
                 };
                 this.toNormal = function () {
-                    this._sprite.texture = resources[normalName].texture;
+                    this._body.collisionResponse = true;
+                    this._sprite.texture         = resources[normalName].texture;
                 };
                 this.toGray   = function () {
-                    this._sprite.texture = resources[grayName].texture;
+                    this._body.collisionResponse = false;
+                    this._sprite.texture         = resources[grayName].texture;
                 };
             }
             
-            GameBrick.prototype = Object.create(GameObject.prototype);
+            GameBrick.prototype             = Object.create(GameObject.prototype);
             GameBrick.prototype.constructor = GameBrick;
             
             return GameBrick;
@@ -261,9 +277,15 @@ window.requestAnimationFrame = (function () {
         
         var GameBar = (function () {
             function GameBar() {
-                GameObject.call(this, 100, 20, 30, 30, "ball");
+                var width  = 100,
+                    height = 20;
+                GameObject.call(this, renderer.width/2, 20, width, height, "bar");
                 
-                //this._body.addShape(new p2.Box())
+                var fictionBody = new p2.Body({ position: [0, 20], type: p2.Body.STATIC });
+                
+                this._body.addShape(new p2.Box({ width: width, height: height }));
+                this._sprite.anchor.x = 0.5;
+                this._sprite.anchor.y = 0.5;
             }
             
             GameBar.prototype             = Object.create(GameObject.prototype);
@@ -272,7 +294,15 @@ window.requestAnimationFrame = (function () {
             return GameBar;
         })();
         
-        function GameObject(x, y, width, height, spriteName) {
+        function GameObject(x, y, width, height, spriteName, bodyOptions) {
+            if (typeof(bodyOptions) === "undefined") {
+                bodyOptions = {
+                    collisionResponse: true,
+                    type             : p2.Body.STATIC
+                }
+            }
+            bodyOptions["position"] = [x, y];
+            
             this._geometry = {
                 x     : x,
                 y     : y,
@@ -286,18 +316,19 @@ window.requestAnimationFrame = (function () {
             this._sprite.width  = width;
             this._sprite.height = height;
             
-            this._body = new p2.Body({
-                position         : [x, y],
-                collisionResponse: true,
-                type             : p2.Body.STATIC
-            });
-            
-            this.sprite = function () {
-                return this._sprite;
-            };
-            this.body   = function () {
-                return this._body;
-            };
+            this._body = new p2.Body(bodyOptions);
         }
+        
+        GameObject.prototype.sprite = function () {
+            return this._sprite;
+        };
+        
+        GameObject.prototype.body = function () {
+            return this._body;
+        };
+        
+        GameObject.prototype.update = function (deltaTime, totalTime) {
+        
+        };
     }
 }(jQuery));
