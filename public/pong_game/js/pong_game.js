@@ -1,6 +1,6 @@
-var $ = require('jQuery');
-var PIXI = require('pixi.js');
-var p2 = require('p2');
+let $ = require('jquery');
+let PIXI = require('pixi.js');
+let p2 = require('p2');
 
 window.requestAnimationFrame = (function () {
     return window.requestAnimationFrame ||
@@ -19,7 +19,7 @@ $(document).ready(function() {
 (function ($) {
     $.fn.PongGame = function () {
         // Aliases for PIXI
-        var Sprite       = PIXI.Sprite,
+        let Sprite       = PIXI.Sprite,
             Container    = PIXI.Container,
             loader       = PIXI.loader,
             resources    = loader.resources;
@@ -82,7 +82,7 @@ $(document).ready(function() {
             var bWidth  = (HOME_COLUMNS - 0.5)*BRICK_WIDTH;
             
             // Create bricks wall
-            for (var i = 0; i < HOME_ROWS; ++i) {
+            for (let i = 0; i < HOME_ROWS; ++i) {
                 var bLine  = [];
                 var xShift = xShift0 + (i%2 === 0 ? 0 : BRICK_WIDTH/2);
                 var yPos   = renderer.height - BRICK_HEIGHT*(i + 1);
@@ -98,13 +98,13 @@ $(document).ready(function() {
             }
             
             // Add the sprites to the stage
-            for (var i = 0; i < brickLines.length; ++i) {
+            for (let i = 0; i < brickLines.length; ++i) {
                 brickLines[i].forEach(function (brick) {
                     brick.toGray();
                     stage.addChild(brick.sprite());
                     world.addBody(brick.body());
                 });
-                if (i === 0) for (var j = 0; j < brickLines[i].length; ++j) {
+                if (i === 0) for (let j = 0; j < brickLines[i].length; ++j) {
                     brickLines[i][j].toBorder();
                 }
             }
@@ -117,7 +117,7 @@ $(document).ready(function() {
             
             
             // Bottom
-            var planeBody = new p2.Body({ position: [0, renderer.height], angle: Math.PI });
+            let planeBody = new p2.Body({ position: [0, renderer.height], angle: Math.PI });
             planeBody.addShape(new p2.Plane());
             world.addBody(planeBody);
             
@@ -163,7 +163,7 @@ $(document).ready(function() {
             // Loop this function at 60 frames per second
             requestAnimationFrame(gameLoop);
             
-            var deltaTime = lastTime ? time - lastTime : 0;
+            let deltaTime = lastTime ? time - lastTime : 0;
             deltaTime /= 1000;
             
             if (playerData.mode === GAME_MODES.PLAYING) {
@@ -209,10 +209,10 @@ $(document).ready(function() {
         
         }
         
-        var GameBall = (function () {
+        let GameBall = (function () {
             
             function GameBall() {
-                var width  = 20,
+                const width  = 20,
                     height = 20;
                 
                 // Call parent constructor
@@ -248,13 +248,13 @@ $(document).ready(function() {
         // OBJECTS DEFINITIONS //
         /////////////////////////
         
-        var GameBrick = (function () {
+        let GameBrick = (function () {
             function GameBrick(name, x, y, width, height) {
                 if (typeof(width) === "undefined") width = BRICK_WIDTH;
                 if (typeof(height) === "undefined") height = BRICK_HEIGHT;
-                var normalName     = "brick" + name;
-                var grayName       = "brick_gray" + name;
-                var grayBorderName = "brick_gray" + name + "_border";
+                const normalName     = "brick" + name;
+                const grayName       = "brick_gray" + name;
+                const grayBorderName = "brick_gray" + name + "_border";
                 
                 GameObject.call(this, x, y, width, height, grayName);
                 
@@ -281,9 +281,9 @@ $(document).ready(function() {
             return GameBrick;
         })();
         
-        var GameBar = (function () {
+        let GameBar = (function () {
             function GameBar() {
-                var width  = 100,
+                const width  = 100,
                     height = 20;
                 GameObject.call(this, renderer.width/2, 20, width, height, "bar");
                 

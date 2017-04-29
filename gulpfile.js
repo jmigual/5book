@@ -1,151 +1,69 @@
-"use strict";
-var gulp           = require('gulp');
-var gutil          = require('gulp-util');
-var pump           = require('pump');
-var uglify         = require('gulp-uglify');
-var csso           = require('gulp-csso');
-var inject         = require('gulp-inject');
-var mainBowerFiles = require('main-bower-files');
-var clean          = require('gulp-clean');
-var gulpCopy       = require('gulp-copy');
-var changed        = require('gulp-changed');
-var runSequence    = require('run-sequence');
-var htmlmin        = require('gulp-htmlmin');
-var argv           = require('yargs').argv;
-var fs             = require('fs');
-var sourcemaps     = require('gulp-sourcemaps');
-var babel          = require('gulp-babel');
+/**
+ * Created by joan on 29/04/17.
+ */
+const gulp            = require('gulp');
+const gutil           = require('gulp-util');
+const pump            = require('pump');
+const commandLineArgs = require('command-line-args');
+const babel           = require('gulp-babel');
+const clean           = require('gulp-clean');
+const tap             = require('gulp-tap');
+const browserify      = require('browserify');
+const through         = require('through2');
+const sourcemaps      = require('gulp-sourcemaps');
+const buffer          = require('vinyl-buffer');
+const source          = require('vinyl-source-stream');
+const globby          = require('globby');
+const inject          = require('gulp-inject');
+const rename          = require('gulp-rename');
+const es              = require('event-stream');
+const runSequence     = require('run-sequence');
 
-var destFolder = 'build/';
-var destPublic = destFolder + 'public/';
-var debug      = false;
-
-var additionalFiles = [
-    'public/css/w3.css',
-    'public/css/custom.css'
+const optionDefinitions = [
+    { name: 'type', alias: 't', defaultValue: "release" },
 ];
+const options           = commandLineArgs(optionDefinitions);
+const debug             = options["type"] === "debug";
 
-function changedFile(name, options) {
-    if (options === undefined) options = {};
-    options.hasChanged = fileChanged;
-    return changed(name, options);
-}
-
-function fileChanged(stream, callback, sourceFile, destPath) {
-    changed.compareLastModifiedTime(stream, callback, sourceFile, destPath);
-    
-    //console.log("File  : " + destPath);
-    //console.log("Exists: " + fs.existsSync(destPath));
-    if (!fs.existsSync(destPath)) {
-        stream.push(sourceFile);
-        gutil.log("Pushed " + gutil.colors.magenta(sourceFile.path.replace(__dirname + "/", "")));
-    }
-}
-
-function getBowerFiles() {
-    return mainBowerFiles({
-        paths    : 'public',
-        overrides: {
-            'fullpage.js': {
-                main: [
-                    debug ? 'vendors/scrolloverflow.js' : 'vendors/scrolloverflow.min.js',
-                    debug ? 'dist/jquery.fullpage.js' : 'dist/jquery.fullpage.min.js',
-                    debug ? 'dist/jquery.fullpage.css' : 'dist/jquery.fullpage.min.css'
-                ]
-            }
-        }
+gulp.task('js', function (done) {
+    globby(["./public/**/*.js"]).then(files => {
+        let tasks = files.map(entry => {
+            return pump([
+                browserify({
+                    entries: [entry],
+                    debug  : true
+                }).bundle(),
+                source(entry),
+                rename({ extname: ".bundle.js" }),
+                buffer(),
+                sourcemaps.init({ loadMaps: true }),
+                babel({ presets: ['es2015'] }),
+                sourcemaps.write("./"),
+                gulp.dest("build")
+            ])
+        });
+        es.merge(tasks).on("end", done);
     });
-}
-
-gulp.task('data', function (cb) {
-    pump([
-        gulp.src('public/data/*'),
-        gulp.dest(destPublic + 'data')
-    ], cb);
 });
 
-gulp.task('css', function (cb) {
-    var destCSS = destPublic + 'css';
-    
-    pump([
-        gulp.src('public/css/*.css'),
-        changedFile(destCSS),
-        csso({
-            restructure: !debug,
-            sourceMap  : debug
-        }),
-        gulp.dest(destCSS)
-    ], cb);
+gulp.task("html", ["js"], function () {
+    return pump([
+        gulp.src('public/**/*.html'),
+        inject(gulp.src("build/**/*.js", { read: false })),
+        gulp.dest('build/public')
+    ])
 });
 
-gulp.task('scripts', function (cb) {
-    var destJs = destPublic + 'js';
-    
-    pump([
-        gulp.src('public/js/**/*.js'),
-        sourcemaps.init(),
-        changedFile(destJs),
-        babel({ presets: ['es2016'] }),
-        uglify({
-            preserveComments: 'license'
-        }),
-        sourcemaps.write("."),
-        gulp.dest(destJs)
-    ], cb);
-});
-
-gulp.task('html', function (cb) {
-    pump([
-        gulp.src(['public/**/*.html', '!public/bower_components/**/*.html']),
-        changedFile(destPublic),
-        inject(gulp.src(getBowerFiles(), { read: false }),
-            {
-                name    : 'bower',
-                relative: true
-            }),
-        inject(gulp.src(additionalFiles, { read: false }),
-            {
-                name    : 'additional',
-                relative: true
-            }),
-        htmlmin({
-            collapseWhitespace: true
-        }),
-        gulp.dest(destPublic)
-    ], cb);
-});
-
-gulp.task('libraries', function (cb) {
-    pump([
-        gulp.src(getBowerFiles()),
-        //gulp.dest(destLib)
-        gulpCopy(destPublic, { prefix: 1 })
-    ], cb);
-});
-
-gulp.task('images', function (cb) {
-    var destImg = destPublic + 'img';
-    
-    pump([
-        gulp.src('public/img/*'),
-        changedFile(destImg),
-        gulp.dest(destImg)
-    ], cb);
-});
-
-gulp.task('clean', function (cb) {
-    pump([
-        gulp.src(destFolder, { read: false }),
+gulp.task('clean', function () {
+    return pump([
+        gulp.src('build', { read: false }),
         clean()
-    ], cb);
+    ]);
 });
 
-gulp.task('rebuild', function () {
-    runSequence('clean', 'default');
+gulp.task('default', function (done) {
+    gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
+    done();
 });
 
-gulp.task('default', function () {
-    debug = argv.type === 'debug';
-    gutil.log(gutil.colors.green('Building in ' + (debug ? 'debug' : 'release') + ' mode'));
-    gulp.start(['css', 'scripts', 'html', 'libraries', 'images', 'data']);
-}); 
+gulp.task('rebuild', gulp.series('clean', 'default'));
