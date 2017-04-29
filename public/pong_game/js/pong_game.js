@@ -44,8 +44,8 @@ $(document).ready(function () {
         
         $(this).html(renderer.view);
         renderer.view.style.border = "1px dashed black";
-        renderer.backgroundColor = 0xFFFFFF;
-        renderer.transparent = true;
+        renderer.backgroundColor   = 0xFFFFFF;
+        renderer.transparent       = true;
         
         // Images for sprites
         const images = [
@@ -69,7 +69,7 @@ $(document).ready(function () {
         let brickLines, ball, counter = 1, lastTime, world, playerBar, gameObjects = [], topBar;
         
         let playerData = {
-            mode           : GAME_MODES.PLAYING,
+            mode : GAME_MODES.PLAYING,
             lives: null
         };
         
@@ -161,6 +161,35 @@ $(document).ready(function () {
             stage.addChild(playerData.lives.sprite());
             gameObjects.push(playerData.lives);
             
+            // Setup keys
+            //Capture the keyboard arrow keys
+            let keys = {
+                left:  keyboard(37),
+                right:  keyboard(39)
+            };
+            
+            keys.left.press = function() {
+                console.log("left");
+                playerBar.goLeft();
+            };
+            
+            keys.left.release = function() {
+                if (!keys.right.isDown) {
+                    playerBar.stop();
+                }
+            };
+            
+            keys.right.press = function () {
+                console.log("right");
+                playerBar.goRight();
+            };
+            
+            keys.right.release = function () {
+                if (!keys.left.isDown) {
+                    playerBar.stop();
+                }
+            };
+            
             
             console.log("Setup finished");
             gameLoop(0);
@@ -220,110 +249,124 @@ $(document).ready(function () {
         function finished_loose(deltaTime) {
             
         }
-        
-        let GameBall = (function () {
-            
-            function GameBall() {
-                const width  = 20,
-                      height = 20;
-                
-                // Call parent constructor
-                GameObject.call(this, renderer.width/2, 40, width, height, "ball", {
-                    type    : p2.Body.DYNAMIC,
-                    mass    : 1,
-                    velocity: [20, 150]
-                });
-                
-                this._body.addShape(new p2.Circle({ radius: (width + height)/4 }));
-                this._body.damping        = 0;
-                this._body.angularDamping = 0;
-                
-                this._sprite.anchor.x = 0.5;
-                this._sprite.anchor.y = 0.5;
-            }
-            
-            GameBall.prototype             = Object.create(GameObject.prototype);
-            GameBall.prototype.constructor = GameBall;
-            
-            GameBall.prototype.update = function () {
-                this._sprite.x = this._body.interpolatedPosition[0];
-                this._sprite.y = this._body.interpolatedPosition[1];
-                //console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
-                //console.log("Velocity:", this._body.velocity);
-            };
-            
-            return GameBall;
-        })();
-        
+    
         
         /////////////////////////
         // OBJECTS DEFINITIONS //
         /////////////////////////
         
-        let GameBrick = (function () {
-            function GameBrick(name, x, y, width, height) {
-                if (typeof(width) === "undefined") width = BRICK_WIDTH;
-                if (typeof(height) === "undefined") height = BRICK_HEIGHT;
-                const normalName     = "brick" + name;
-                const grayName       = "brick_gray" + name;
-                const grayBorderName = "brick_gray" + name + "_border";
-                
-                GameObject.call(this, x, y, width, height, grayName);
-                
-                this._body.position = [x + width/2, y + height/2];
-                this._body.addShape(new p2.Box({ width: width, height: height }));
-                
-                this.toBorder = function () {
-                    this._body.collisionResponse = true;
-                    this._sprite.texture         = resources[grayBorderName].texture;
-                };
-                this.toNormal = function () {
-                    this._body.collisionResponse = true;
-                    this._sprite.texture         = resources[normalName].texture;
-                };
-                this.toGray   = function () {
-                    this._body.collisionResponse = false;
-                    this._sprite.texture         = resources[grayName].texture;
-                };
-            }
-            
-            GameBrick.prototype             = Object.create(GameObject.prototype);
-            GameBrick.prototype.constructor = GameBrick;
-            
-            return GameBrick;
-        })();
         
-        let GameBar = (function () {
-            function GameBar() {
-                const width  = 100,
-                      height = 20;
-                GameObject.call(this, renderer.width/2, 20, width, height, "bar");
-                
-                const fictionBody = new p2.Body({ position: [0, 20], type: p2.Body.STATIC });
-                
-                this._body.addShape(new p2.Box({ width: width, height: height }));
-                this._sprite.anchor.x = 0.5;
-                this._sprite.anchor.y = 0.5;
-            }
+        // class: GameBall
+        function GameBall() {
+            const width  = 20,
+                  height = 20;
+        
+            // Call parent constructor
+            GameObject.call(this, renderer.width/2, 40, width, height, "ball", {
+                type    : p2.Body.DYNAMIC,
+                mass    : 1,
+                velocity: [20, 150]
+            });
+        
+            this._body.addShape(new p2.Circle({ radius: (width + height)/4 }));
+            this._body.damping        = 0;
+            this._body.angularDamping = 0;
+        
+            this._sprite.anchor.x = 0.5;
+            this._sprite.anchor.y = 0.5;
+        }
+        
+        GameBall.prototype             = Object.create(GameObject.prototype);
+        GameBall.prototype.constructor = GameBall;
+        GameBall.prototype.update = function () {
+            this._sprite.x = this._body.interpolatedPosition[0];
+            this._sprite.y = this._body.interpolatedPosition[1];
+            //console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
+            //console.log("Velocity:", this._body.velocity);
+        };
+        
+        
+        // class: GameBrick
+        function GameBrick(name, x, y, width, height) {
+            if (typeof(width) === "undefined") width = BRICK_WIDTH;
+            if (typeof(height) === "undefined") height = BRICK_HEIGHT;
+            const normalName     = "brick" + name;
+            const grayName       = "brick_gray" + name;
+            const grayBorderName = "brick_gray" + name + "_border";
             
-            GameBar.prototype             = Object.create(GameObject.prototype);
-            GameBar.prototype.constructor = GameBar;
+            GameObject.call(this, x, y, width, height, grayName);
             
-            return GameBar;
-        })();
+            this._body.position = [x + width/2, y + height/2];
+            this._body.addShape(new p2.Box({ width: width, height: height }));
+            
+            this.toBorder = function () {
+                this._body.collisionResponse = true;
+                this._sprite.texture         = resources[grayBorderName].texture;
+            };
+            this.toNormal = function () {
+                this._body.collisionResponse = true;
+                this._sprite.texture         = resources[normalName].texture;
+            };
+            this.toGray   = function () {
+                this._body.collisionResponse = false;
+                this._sprite.texture         = resources[grayName].texture;
+            };
+        }
+        
+        GameBrick.prototype             = Object.create(GameObject.prototype);
+        GameBrick.prototype.constructor = GameBrick;
     
+        
+        // class: GameBar
+        function GameBar() {
+            const width  = 100,
+                  height = 20,
+                  velocity = 100;
+            GameObject.call(this, renderer.width/2, 20, width, height, "bar");
+            
+            this._body.addShape(new p2.Box({ width: width, height: height }));
+            this._sprite.anchor.x = 0.5;
+            this._sprite.anchor.y = 0.5;
+            
+            this.vx = 0;
+            this.goRight = function() {
+                this.vx = velocity;
+            };
+            this.goLeft = function() {
+                this.vx = -velocity;
+            };
+            this.stop = function() {
+                this.vx = 0;
+            }
+        }
+        
+        GameBar.prototype             = Object.create(GameObject.prototype);
+        GameBar.prototype.constructor = GameBar;
+        GameBar.prototype.update = function(deltaTime, time) {
+            const dx = deltaTime*this.vx;
+            this._body.position[0] += dx;
+            this._sprite.position.x += dx;
+            console.log(this._body.position);
+        };
+        
+        
+        // class: GameLivesDisplay
         function GameLivesDisplay() {
-            this.lives = 3;
+            this.lives   = 3;
             this._sprite = new PIXI.Text("");
             this._sprite.position.set(20, 20);
         }
-    
-        GameLivesDisplay.prototype.sprite = function() { return this._sprite; };
         
-        GameLivesDisplay.prototype.update = function() {
+        GameLivesDisplay.prototype.sprite = function () {
+            return this._sprite;
+        };
+        
+        GameLivesDisplay.prototype.update = function () {
             this._sprite.text = `Lives: ${this.lives}`;
         };
         
+        
+        // class: GameObject
         function GameObject(x, y, width, height, spriteName, bodyOptions) {
             if (typeof(bodyOptions) === "undefined") {
                 bodyOptions = {
@@ -357,8 +400,44 @@ $(document).ready(function () {
             return this._body;
         };
         
-        GameObject.prototype.update = function (deltaTime, totalTime) {
+        GameObject.prototype.update = (deltaTime, totalTime) => {};
+        
+        
+        function keyboard(keyCode) {
+            let key         = {};
+            key.code        = keyCode;
+            key.isDown      = false;
+            key.isUp        = true;
+            key.press       = undefined;
+            key.release     = undefined;
+            //The `downHandler`
+            key.downHandler = function (event) {
+                if (event.keyCode === key.code) {
+                    if (key.isUp && key.press) key.press();
+                    key.isDown = true;
+                    key.isUp   = false;
+                    event.preventDefault();
+                }
+            };
             
-        };
+            //The `upHandler`
+            key.upHandler = function (event) {
+                if (event.keyCode === key.code) {
+                    if (key.isDown && key.release) key.release();
+                    key.isDown = false;
+                    key.isUp   = true;
+                    event.preventDefault();
+                }
+            };
+            
+            //Attach event listeners
+            window.addEventListener(
+                "keydown", key.downHandler.bind(key), false
+            );
+            window.addEventListener(
+                "keyup", key.upHandler.bind(key), false
+            );
+            return key;
+        }
     }
 }($));
