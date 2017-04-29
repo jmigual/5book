@@ -12,6 +12,10 @@ window.requestAnimationFrame = (function () {
         };
 })();
 
+$(document).ready(function() {
+    $("#pong-game-canvas").PongGame();
+});
+
 (function ($) {
     $.fn.PongGame = function () {
         // Aliases for PIXI
