@@ -3,7 +3,11 @@
   "version": "0.0.1",
   "description": "Reading made simple",
   "main": "app.js",
-  "dependencies": {},
+  "dependencies": {
+    "jquery": "^3.2.1",
+    "p2": "^0.7.1",
+    "pixi.js": "^4.5.1"
+  },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-es2016": "^6.24.1",

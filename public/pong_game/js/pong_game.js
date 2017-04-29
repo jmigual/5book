@@ -1,3 +1,7 @@
+var $ = require('jQuery');
+var PIXI = require('pixi.js');
+var p2 = require('p2');
+
 window.requestAnimationFrame = (function () {
     return window.requestAnimationFrame ||
         window.mozRequestAnimationFrame ||
@@ -12,9 +16,7 @@ window.requestAnimationFrame = (function () {
     $.fn.PongGame = function () {
         // Aliases for PIXI
         var Sprite       = PIXI.Sprite,
-            TextureCache = PIXI.utils.TextureCache,
             Container    = PIXI.Container,
-            Texture      = PIXI.Texture,
             loader       = PIXI.loader,
             resources    = loader.resources;
         
