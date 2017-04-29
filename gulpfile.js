@@ -33,7 +33,7 @@ gulp.task('js', function (done) {
                 browserify({
                     entries: [entry],
                     debug  : true,
-                    detectGlobals: false
+                    insertGlobals: true
                 }).transform(babelify, {
                     // Use all of the ES2015 spec
                     presets   : ["es2015"],

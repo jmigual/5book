@@ -1,6 +1,6 @@
-let $    = require('jquery');
-let PIXI = require('pixi.js');
-let p2   = require('p2');
+const $    = require('jquery');
+const PIXI = require('pixi.js');
+const p2   = require('p2');
 
 window.requestAnimationFrame = (function () {
     return window.requestAnimationFrame ||
@@ -44,6 +44,8 @@ $(document).ready(function () {
         
         $(this).html(renderer.view);
         renderer.view.style.border = "1px dashed black";
+        renderer.backgroundColor = 0xFFFFFF;
+        renderer.transparent = true;
         
         // Images for sprites
         const images = [
@@ -68,7 +70,7 @@ $(document).ready(function () {
         
         let playerData = {
             mode           : GAME_MODES.PLAYING,
-            remaining_lives: 3
+            lives: null
         };
         
         function setup() {
@@ -147,8 +149,18 @@ $(document).ready(function () {
                 if ((evt.bodyA === ball.body() || evt.bodyB === ball.body()) &&
                     (evt.bodyA === topBar || evt.bodyB === topBar)) {
                     console.log("Game finished");
+                    playerData.lives.lives--;
+                    if (playerData.lives.lives < 0) {
+                        playerData.mode = GAME_MODES.FINISHED_LOOSE;
+                    }
                 }
             });
+            
+            // Add lives text
+            playerData.lives = new GameLivesDisplay();
+            stage.addChild(playerData.lives.sprite());
+            gameObjects.push(playerData.lives);
+            
             
             console.log("Setup finished");
             gameLoop(0);
@@ -299,6 +311,18 @@ $(document).ready(function () {
             
             return GameBar;
         })();
+    
+        function GameLivesDisplay() {
+            this.lives = 3;
+            this._sprite = new PIXI.Text("");
+            this._sprite.position.set(20, 20);
+        }
+    
+        GameLivesDisplay.prototype.sprite = function() { return this._sprite; };
+        
+        GameLivesDisplay.prototype.update = function() {
+            this._sprite.text = `Lives: ${this.lives}`;
+        };
         
         function GameObject(x, y, width, height, spriteName, bodyOptions) {
             if (typeof(bodyOptions) === "undefined") {
