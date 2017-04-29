@@ -1,6 +1,6 @@
-let $ = require('jquery');
+let $    = require('jquery');
 let PIXI = require('pixi.js');
-let p2 = require('p2');
+let p2   = require('p2');
 
 window.requestAnimationFrame = (function () {
     return window.requestAnimationFrame ||
@@ -12,17 +12,17 @@ window.requestAnimationFrame = (function () {
         };
 })();
 
-$(document).ready(function() {
+$(document).ready(function () {
     $("#pong-game-canvas").PongGame();
 });
 
 (function ($) {
     $.fn.PongGame = function () {
         // Aliases for PIXI
-        let Sprite       = PIXI.Sprite,
-            Container    = PIXI.Container,
-            loader       = PIXI.loader,
-            resources    = loader.resources;
+        const Sprite    = PIXI.Sprite,
+              Container = PIXI.Container,
+              loader    = PIXI.loader,
+              resources = loader.resources;
         
         // Constants definition
         const HOME_ROWS    = 10,
@@ -39,14 +39,14 @@ $(document).ready(function() {
               };
         
         // Configure renderer
-        var renderer = PIXI.autoDetectRenderer(800, 600),
-            stage    = new Container();
+        const renderer = PIXI.autoDetectRenderer(800, 600),
+              stage    = new Container();
         
         $(this).html(renderer.view);
         renderer.view.style.border = "1px dashed black";
         
         // Images for sprites
-        var images = [
+        const images = [
             "brick",
             "brick_half",
             "brick_gray",
@@ -64,9 +64,9 @@ $(document).ready(function() {
             .load(setup);
         
         // Define variables that might be used in more than one function
-        var brickLines, ball, counter = 1, lastTime, world, playerBar, gameObjects = [], topBar;
+        let brickLines, ball, counter = 1, lastTime, world, playerBar, gameObjects = [], topBar;
         
-        var playerData = {
+        let playerData = {
             mode           : GAME_MODES.PLAYING,
             remaining_lives: 3
         };
@@ -78,20 +78,20 @@ $(document).ready(function() {
             
             brickLines = [];
             
-            var xShift0 = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
-            var bWidth  = (HOME_COLUMNS - 0.5)*BRICK_WIDTH;
+            const xShift0 = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
+            const bWidth  = (HOME_COLUMNS - 0.5)*BRICK_WIDTH;
             
             // Create bricks wall
             for (let i = 0; i < HOME_ROWS; ++i) {
-                var bLine  = [];
-                var xShift = xShift0 + (i%2 === 0 ? 0 : BRICK_WIDTH/2);
-                var yPos   = renderer.height - BRICK_HEIGHT*(i + 1);
+                let bLine    = [];
+                const xShift = xShift0 + (i%2 === 0 ? 0 : BRICK_WIDTH/2);
+                const yPos   = renderer.height - BRICK_HEIGHT*(i + 1);
                 if (i%2 !== 0) {
                     // Create half bricks;
                     bLine.push(new GameBrick("_half", xShift0, yPos, BRICK_WIDTH/2)); // Head
                     bLine.push(new GameBrick("_half", xShift0 + bWidth, yPos, BRICK_WIDTH/2));   // Tail
                 }
-                for (var j = 0; j < HOME_COLUMNS - i%2; ++j) {
+                for (let j = 0; j < HOME_COLUMNS - i%2; ++j) {
                     bLine.push(new GameBrick("", BRICK_WIDTH*j + xShift, yPos));
                 }
                 brickLines.push(bLine);
@@ -196,24 +196,24 @@ $(document).ready(function() {
         
         // This function has to show the different options and the button showing 'play'
         function mainMenu(deltaTime) {
-        
+            
         }
         
         // Has to show the text saying the player that it has won
         function finished_win(deltaTime) {
-        
+            
         }
         
         // Has to show the text to finish and loose
         function finished_loose(deltaTime) {
-        
+            
         }
         
         let GameBall = (function () {
             
             function GameBall() {
                 const width  = 20,
-                    height = 20;
+                      height = 20;
                 
                 // Call parent constructor
                 GameObject.call(this, renderer.width/2, 40, width, height, "ball", {
@@ -284,10 +284,10 @@ $(document).ready(function() {
         let GameBar = (function () {
             function GameBar() {
                 const width  = 100,
-                    height = 20;
+                      height = 20;
                 GameObject.call(this, renderer.width/2, 20, width, height, "bar");
                 
-                var fictionBody = new p2.Body({ position: [0, 20], type: p2.Body.STATIC });
+                const fictionBody = new p2.Body({ position: [0, 20], type: p2.Body.STATIC });
                 
                 this._body.addShape(new p2.Box({ width: width, height: height }));
                 this._sprite.anchor.x = 0.5;
@@ -334,7 +334,7 @@ $(document).ready(function() {
         };
         
         GameObject.prototype.update = function (deltaTime, totalTime) {
-        
+            
         };
     }
-}(jQuery));
+}($));

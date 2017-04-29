@@ -18,26 +18,30 @@ const inject          = require('gulp-inject');
 const rename          = require('gulp-rename');
 const es              = require('event-stream');
 const runSequence     = require('run-sequence');
+const babelify        = require('babelify');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
 ];
-const options           = commandLineArgs(optionDefinitions);
+const options           = commandLineArgs(optionDefinitions, { partial: true });
 const debug             = options["type"] === "debug";
 
 gulp.task('js', function (done) {
-    globby(["./public/**/*.js"]).then(files => {
+    globby(["public/**/*.js"]).then(files => {
         let tasks = files.map(entry => {
             return pump([
                 browserify({
                     entries: [entry],
-                    debug  : true
+                    debug  : true,
+                    detectGlobals: false
+                }).transform(babelify, {
+                    // Use all of the ES2015 spec
+                    presets   : ["es2015"],
+                    sourceMaps: true
                 }).bundle(),
                 source(entry),
-                rename({ extname: ".bundle.js" }),
                 buffer(),
                 sourcemaps.init({ loadMaps: true }),
-                babel({ presets: ['es2015'] }),
                 sourcemaps.write("./"),
                 gulp.dest("build")
             ])
@@ -46,10 +50,16 @@ gulp.task('js', function (done) {
     });
 });
 
-gulp.task("html", ["js"], function () {
+gulp.task("html", function () {
     return pump([
         gulp.src('public/**/*.html'),
-        inject(gulp.src("build/**/*.js", { read: false })),
+        gulp.dest('build/public')
+    ])
+});
+
+gulp.task("img", function () {
+    return pump([
+        gulp.src('public/**/*.png'),
         gulp.dest('build/public')
     ])
 });
@@ -63,7 +73,9 @@ gulp.task('clean', function () {
 
 gulp.task('default', function (done) {
     gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
-    done();
+    runSequence(['js', 'html', 'img'], done);
 });
 
-gulp.task('rebuild', gulp.series('clean', 'default'));
+gulp.task('rebuild', function (done) {
+    runSequence('clean', 'default', done);
+});
