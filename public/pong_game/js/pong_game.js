@@ -164,16 +164,16 @@ $(document).ready(function () {
             // Setup keys
             //Capture the keyboard arrow keys
             let keys = {
-                left:  keyboard(37),
-                right:  keyboard(39)
+                left : keyboard(37),
+                right: keyboard(39)
             };
             
-            keys.left.press = function() {
+            keys.left.press = function () {
                 console.log("left");
                 playerBar.goLeft();
             };
             
-            keys.left.release = function() {
+            keys.left.release = function () {
                 if (!keys.right.isDown) {
                     playerBar.stop();
                 }
@@ -249,158 +249,155 @@ $(document).ready(function () {
         function finished_loose(deltaTime) {
             
         }
-    
+        
         
         /////////////////////////
         // OBJECTS DEFINITIONS //
         /////////////////////////
         
-        
-        // class: GameBall
-        function GameBall() {
-            const width  = 20,
-                  height = 20;
-        
-            // Call parent constructor
-            GameObject.call(this, renderer.width/2, 40, width, height, "ball", {
-                type    : p2.Body.DYNAMIC,
-                mass    : 1,
-                velocity: [20, 150]
-            });
-        
-            this._body.addShape(new p2.Circle({ radius: (width + height)/4 }));
-            this._body.damping        = 0;
-            this._body.angularDamping = 0;
-        
-            this._sprite.anchor.x = 0.5;
-            this._sprite.anchor.y = 0.5;
+        class GameBall extends GameObject {
+            constructor() {
+                const width  = 20,
+                      height = 20;
+                
+                // Call parent constructor
+                super(this, renderer.width/2, 40, width, height, "ball", {
+                    type    : p2.Body.DYNAMIC,
+                    mass    : 1,
+                    velocity: [20, 150]
+                });
+                
+                this._body.addShape(new p2.Circle({ radius: (width + height)/4 }));
+                this._body.damping        = 0;
+                this._body.angularDamping = 0;
+                
+                this._sprite.anchor.x = 0.5;
+                this._sprite.anchor.y = 0.5;
+            }
+            
+            update() {
+                this._sprite.x = this._body.interpolatedPosition[0];
+                this._sprite.y = this._body.interpolatedPosition[1];
+                //console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
+                //console.log("Velocity:", this._body.velocity);
+            }
         }
         
-        GameBall.prototype             = Object.create(GameObject.prototype);
-        GameBall.prototype.constructor = GameBall;
-        GameBall.prototype.update = function () {
-            this._sprite.x = this._body.interpolatedPosition[0];
-            this._sprite.y = this._body.interpolatedPosition[1];
-            //console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
-            //console.log("Velocity:", this._body.velocity);
-        };
-        
-        
-        // class: GameBrick
-        function GameBrick(name, x, y, width, height) {
-            if (typeof(width) === "undefined") width = BRICK_WIDTH;
-            if (typeof(height) === "undefined") height = BRICK_HEIGHT;
-            const normalName     = "brick" + name;
-            const grayName       = "brick_gray" + name;
-            const grayBorderName = "brick_gray" + name + "_border";
+        class GameBrick extends GameObject {
+            constructor(name, x, y, width, height) {
+                if (typeof(width) === "undefined") width = BRICK_WIDTH;
+                if (typeof(height) === "undefined") height = BRICK_HEIGHT;
+                const normalName     = "brick" + name;
+                const grayName       = "brick_gray" + name;
+                const grayBorderName = "brick_gray" + name + "_border";
+                
+                super(x, y, width, height, grayName);
+                
+                this._body.position = [x + width/2, y + height/2];
+                this._body.addShape(new p2.Box({ width: width, height: height }));
+            }
             
-            GameObject.call(this, x, y, width, height, grayName);
-            
-            this._body.position = [x + width/2, y + height/2];
-            this._body.addShape(new p2.Box({ width: width, height: height }));
-            
-            this.toBorder = function () {
+            toBorder() {
                 this._body.collisionResponse = true;
                 this._sprite.texture         = resources[grayBorderName].texture;
             };
-            this.toNormal = function () {
+            
+            toNormal() {
                 this._body.collisionResponse = true;
                 this._sprite.texture         = resources[normalName].texture;
             };
-            this.toGray   = function () {
+            
+            toGray() {
                 this._body.collisionResponse = false;
                 this._sprite.texture         = resources[grayName].texture;
             };
         }
         
-        GameBrick.prototype             = Object.create(GameObject.prototype);
-        GameBrick.prototype.constructor = GameBrick;
-    
-        
-        // class: GameBar
-        function GameBar() {
-            const width  = 100,
-                  height = 20,
-                  velocity = 100;
-            GameObject.call(this, renderer.width/2, 20, width, height, "bar");
+        class GameBar extends GameObject {
+            constructor() {
+                const width  = 100,
+                      height = 20;
+                super(renderer.width/2, 20, width, height, "bar");
+                
+                this._body.addShape(new p2.Box({ width: width, height: height }));
+                this._sprite.anchor.x = 0.5;
+                this._sprite.anchor.y = 0.5;
+                
+                this.VELOCITY = 150;
+                this.vx       = 0;
+            }
             
-            this._body.addShape(new p2.Box({ width: width, height: height }));
-            this._sprite.anchor.x = 0.5;
-            this._sprite.anchor.y = 0.5;
+            goRight() {
+                this.vx = this.VELOCITY;
+            };
             
-            this.vx = 0;
-            this.goRight = function() {
-                this.vx = velocity;
+            goLeft() {
+                this.vx = -this.VELOCITY;
             };
-            this.goLeft = function() {
-                this.vx = -velocity;
-            };
-            this.stop = function() {
+            
+            stop() {
                 this.vx = 0;
             }
+            
+            update(deltaTime) {
+                const dx = deltaTime*this.vx;
+                this._body.position[0] += dx;
+                this._sprite.position.x += dx;
+            }
         }
         
-        GameBar.prototype             = Object.create(GameObject.prototype);
-        GameBar.prototype.constructor = GameBar;
-        GameBar.prototype.update = function(deltaTime, time) {
-            const dx = deltaTime*this.vx;
-            this._body.position[0] += dx;
-            this._sprite.position.x += dx;
-            console.log(this._body.position);
-        };
-        
-        
-        // class: GameLivesDisplay
-        function GameLivesDisplay() {
-            this.lives   = 3;
-            this._sprite = new PIXI.Text("");
-            this._sprite.position.set(20, 20);
+        class GameLivesDisplay {
+            constructor() {
+                this.lives   = 3;
+                this._sprite = new PIXI.Text("");
+                this._sprite.position.set(20, 20);
+            }
+            
+            get sprite() {
+                return this._sprite;
+            }
+            
+            update() {
+                this._sprite.text = `Lives: ${this.lives}`;
+            }
         }
         
-        GameLivesDisplay.prototype.sprite = function () {
-            return this._sprite;
-        };
-        
-        GameLivesDisplay.prototype.update = function () {
-            this._sprite.text = `Lives: ${this.lives}`;
-        };
-        
-        
-        // class: GameObject
-        function GameObject(x, y, width, height, spriteName, bodyOptions) {
-            if (typeof(bodyOptions) === "undefined") {
-                bodyOptions = {
+        class GameObject {
+            constructor(x, y, width, height, spriteName, bodyOptions) {
+                if (!bodyOptions) bodyOptions = {
                     collisionResponse: true,
                     type             : p2.Body.STATIC
-                }
+                };
+                bodyOptions["position"] = [x, y];
+                
+                this._geometry = {
+                    x     : x,
+                    y     : y,
+                    width : width,
+                    height: height
+                };
+                
+                this._sprite        = new Sprite(resources[spriteName].texture);
+                this._sprite.x      = x;
+                this._sprite.y      = y;
+                this._sprite.width  = width;
+                this._sprite.height = height;
+                
+                this._body = new p2.Body(bodyOptions);
             }
-            bodyOptions["position"] = [x, y];
             
-            this._geometry = {
-                x     : x,
-                y     : y,
-                width : width,
-                height: height
-            };
+            get sprite() {
+                return this._sprite;
+            }
             
-            this._sprite        = new Sprite(resources[spriteName].texture);
-            this._sprite.x      = x;
-            this._sprite.y      = y;
-            this._sprite.width  = width;
-            this._sprite.height = height;
+            get body() {
+                return this._body;
+            }
             
-            this._body = new p2.Body(bodyOptions);
+            update(deltaTime, totalTime) {
+                
+            }
         }
-        
-        GameObject.prototype.sprite = function () {
-            return this._sprite;
-        };
-        
-        GameObject.prototype.body = function () {
-            return this._body;
-        };
-        
-        GameObject.prototype.update = (deltaTime, totalTime) => {};
         
         
         function keyboard(keyCode) {

@@ -19,6 +19,7 @@ const rename          = require('gulp-rename');
 const es              = require('event-stream');
 const runSequence     = require('run-sequence');
 const babelify        = require('babelify');
+const domain          = require("domain");
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -26,41 +27,52 @@ const optionDefinitions = [
 const options           = commandLineArgs(optionDefinitions, { partial: true });
 const debug             = options["type"] === "debug";
 
-gulp.task('js', function (done) {
-    globby(["public/**/*.js"]).then(files => {
-        let tasks = files.map(entry => {
-            return pump([
-                browserify({
-                    entries: [entry],
-                    debug  : true,
+gulp.task('js', () => {    
+    return pump(
+        gulp.src("public/**/*.js"),
+        tap(function (file) {
+            let d = domain.create();
+            
+            d.on("error", err => {
+                gutil.log(
+                    gutil.colors.red("Browserify compile error:"),
+                    err.message,
+                    "\n\t",
+                    gutil.colors.cyan("in file"),
+                    file.path
+                );
+            });
+            
+            d.run(function () {
+                file.contents = browserify({
+                    entries      : [file.path],
+                    debug        : true,
                     insertGlobals: true
                 }).transform(babelify, {
                     // Use all of the ES2015 spec
                     presets   : ["es2015"],
                     sourceMaps: true
-                }).bundle(),
-                source(entry),
-                buffer(),
-                sourcemaps.init({ loadMaps: true }),
-                sourcemaps.write("./"),
-                gulp.dest("build")
-            ])
-        });
-        es.merge(tasks).on("end", done);
-    });
+                }).bundle();
+            });
+        }),
+        buffer(),
+        sourcemaps.init({ loadMaps: true }),
+        sourcemaps.write("./"),
+        gulp.dest("build")
+    );
 });
 
 gulp.task("html", function () {
     return pump([
         gulp.src('public/**/*.html'),
-        gulp.dest('build/public')
+        gulp.dest('build')
     ])
 });
 
 gulp.task("img", function () {
     return pump([
         gulp.src('public/**/*.png'),
-        gulp.dest('build/public')
+        gulp.dest('build')
     ])
 });
 
