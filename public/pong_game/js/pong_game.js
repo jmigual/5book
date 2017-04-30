@@ -39,8 +39,9 @@ $(document).ready(function () {
               };
         
         // Configure renderer
-        const renderer = PIXI.autoDetectRenderer(800, 600),
+        const renderer = PIXI.autoDetectRenderer($(window).width(), $(window).height()),
               stage    = new Container();
+        let world;
         
         $(this).html(renderer.view);
         renderer.view.style.border = "1px dashed black";
@@ -66,11 +67,18 @@ $(document).ready(function () {
             .load(setup);
         
         // Define variables that might be used in more than one function
-        let brickLines, ball, counter = 1, lastTime, world, playerBar, gameObjects = [], topBar;
+        let gameData = {
+            mode       : GAME_MODES.PLAYING,
+            playerLives: null,
+            lastTime   : null
+        };
         
-        let playerData = {
-            mode : GAME_MODES.PLAYING,
-            lives: null
+        let gameObject = {
+            ball      : null,
+            playerBar : null,
+            topBar    : null,
+            brickLines: [],
+            all       : []
         };
         
         function setup() {
@@ -78,7 +86,7 @@ $(document).ready(function () {
             world                                    = new p2.World({ gravity: [0, 0] });
             world.defaultContactMaterial.restitution = 1;
             
-            brickLines = [];
+            gameObject.brickLines = [];
             
             const xShift0 = (renderer.width - HOME_COLUMNS*BRICK_WIDTH)/2;
             const bWidth  = (HOME_COLUMNS - 0.5)*BRICK_WIDTH;
@@ -96,26 +104,27 @@ $(document).ready(function () {
                 for (let j = 0; j < HOME_COLUMNS - i%2; ++j) {
                     bLine.push(new GameBrick("", BRICK_WIDTH*j + xShift, yPos));
                 }
-                brickLines.push(bLine);
+                gameObject.brickLines.push(bLine);
             }
             
             // Add the sprites to the stage
-            for (let i = 0; i < brickLines.length; ++i) {
-                brickLines[i].forEach(function (brick) {
+            gameObject.brickLines.forEach(bLine => {
+                bLine.forEach(brick => {
                     brick.toGray();
                     stage.addChild(brick.sprite());
                     world.addBody(brick.body());
                 });
-                if (i === 0) for (let j = 0; j < brickLines[i].length; ++j) {
-                    brickLines[i][j].toBorder();
-                }
-            }
+            });
+            
+            gameObject.brickLines[0].forEach(brick => {
+                brick.toBorder();
+            });
             
             // Add ball to the top center of the screen
-            ball = new GameBall();
-            stage.addChild(ball.sprite());
-            world.addBody(ball.body());
-            gameObjects.push(ball);
+            gameObject.ball = new GameBall();
+            stage.addChild(gameObject.ball.sprite());
+            world.addBody(gameObject.ball.body());
+            gameObject.all.push(gameObject.ball);
             
             
             // Bottom
@@ -124,7 +133,7 @@ $(document).ready(function () {
             world.addBody(planeBody);
             
             // Top 
-            topBar = planeBody = new p2.Body({ position: [0, 0], angle: 0 });
+            gameObject.topBar = planeBody = new p2.Body({ position: [0, 0], angle: 0 });
             planeBody.addShape(new p2.Plane());
             world.addBody(planeBody);
             
@@ -139,27 +148,27 @@ $(document).ready(function () {
             world.addBody(planeBody);
             
             // GameBar
-            playerBar = new GameBar();
-            stage.addChild(playerBar.sprite());
-            world.addBody(playerBar.body());
-            gameObjects.push(playerBar);
+            gameObject.playerBar = new GameBar();
+            stage.addChild(gameObject.playerBar.sprite());
+            world.addBody(gameObject.playerBar.body());
+            gameObject.all.push(gameObject.playerBar);
             
             // Configure contacts
             world.on("beginContact", function (evt) {
-                if ((evt.bodyA === ball.body() || evt.bodyB === ball.body()) &&
-                    (evt.bodyA === topBar || evt.bodyB === topBar)) {
+                if ((evt.bodyA === gameObject.ball.body() || evt.bodyB === gameObject.ball.body()) &&
+                    (evt.bodyA === gameObject.topBar || evt.bodyB === gameObject.topBar)) {
                     console.log("Game finished");
-                    playerData.lives.lives--;
-                    if (playerData.lives.lives < 0) {
-                        playerData.mode = GAME_MODES.FINISHED_LOOSE;
+                    gameData.playerLives.playerLives--;
+                    if (gameData.playerLives.playerLives < 0) {
+                        gameData.mode = GAME_MODES.FINISHED_LOOSE;
                     }
                 }
             });
             
-            // Add lives text
-            playerData.lives = new GameLivesDisplay();
-            stage.addChild(playerData.lives.sprite());
-            gameObjects.push(playerData.lives);
+            // Add playerLives text
+            gameData.playerLives = new GameLivesDisplay();
+            stage.addChild(gameData.playerLives.sprite());
+            gameObject.all.push(gameData.playerLives);
             
             // Setup keys
             //Capture the keyboard arrow keys
@@ -170,23 +179,23 @@ $(document).ready(function () {
             
             keys.left.press = function () {
                 console.log("left");
-                playerBar.goLeft();
+                gameObject.playerBar.goLeft();
             };
             
             keys.left.release = function () {
                 if (!keys.right.isDown) {
-                    playerBar.stop();
+                    gameObject.playerBar.stop();
                 }
             };
             
             keys.right.press = function () {
                 console.log("right");
-                playerBar.goRight();
+                gameObject.playerBar.goRight();
             };
             
             keys.right.release = function () {
                 if (!keys.left.isDown) {
-                    playerBar.stop();
+                    gameObject.playerBar.stop();
                 }
             };
             
@@ -204,24 +213,22 @@ $(document).ready(function () {
             // Loop this function at 60 frames per second
             requestAnimationFrame(gameLoop);
             
-            let deltaTime = lastTime ? time - lastTime : 0;
-            deltaTime /= 1000;
+            const deltaTime = (gameData.lastTime ? time - gameData.lastTime : 0)/1000;
             
-            if (playerData.mode === GAME_MODES.PLAYING) {
+            if (gameData.mode === GAME_MODES.PLAYING) {
                 // Update the current game state
                 play(deltaTime, time);
-            } else if (playerData.mode === GAME_MODES.MAIN_MENU) {
+            } else if (gameData.mode === GAME_MODES.MAIN_MENU) {
                 
-            } else if (playerData.mode === GAME_MODES.FINISHED_WON) {
+            } else if (gameData.mode === GAME_MODES.FINISHED_WON) {
                 
-            } else if (playerData.mode === GAME_MODES.FINISHED_LOOSE) {
+            } else if (gameData.mode === GAME_MODES.FINISHED_LOOSE) {
                 
             }
             
             // Render the stage to see the animation
             renderer.render(stage);
-            ++counter;
-            lastTime = time;
+            gameData.lastTime = time;
         }
         
         /////////////////////////
@@ -230,7 +237,7 @@ $(document).ready(function () {
         
         function play(deltaTime, time) {
             world.step(TIME_STEP, deltaTime);
-            gameObjects.forEach(function (object) {
+            gameObject.all.forEach(object => {
                 object.update(deltaTime, time);
             });
         }
@@ -261,7 +268,7 @@ $(document).ready(function () {
                       height = 20;
                 
                 // Call parent constructor
-                super(this, renderer.width/2, 40, width, height, "ball", {
+                super(renderer.width/2, 40, width, height, "ball", {
                     type    : p2.Body.DYNAMIC,
                     mass    : 1,
                     velocity: [20, 150]
@@ -293,23 +300,27 @@ $(document).ready(function () {
                 
                 super(x, y, width, height, grayName);
                 
+                this.NORMAL_NAME      = normalName;
+                this.GRAY_NAME        = grayName;
+                this.GRAY_BORDER_NAME = grayBorderName;
+                
                 this._body.position = [x + width/2, y + height/2];
                 this._body.addShape(new p2.Box({ width: width, height: height }));
             }
             
             toBorder() {
                 this._body.collisionResponse = true;
-                this._sprite.texture         = resources[grayBorderName].texture;
+                this._sprite.texture         = resources[this.GRAY_BORDER_NAME].texture;
             };
             
             toNormal() {
                 this._body.collisionResponse = true;
-                this._sprite.texture         = resources[normalName].texture;
+                this._sprite.texture         = resources[this.NORMAL_NAME].texture;
             };
             
             toGray() {
                 this._body.collisionResponse = false;
-                this._sprite.texture         = resources[grayName].texture;
+                this._sprite.texture         = resources[this.GRAY_NAME].texture;
             };
         }
         
@@ -348,8 +359,8 @@ $(document).ready(function () {
         
         class GameLivesDisplay {
             constructor() {
-                this.lives   = 3;
-                this._sprite = new PIXI.Text("");
+                this.playerLives = 3;
+                this._sprite     = new PIXI.Text("");
                 this._sprite.position.set(20, 20);
             }
             
@@ -358,7 +369,7 @@ $(document).ready(function () {
             }
             
             update() {
-                this._sprite.text = `Lives: ${this.lives}`;
+                this._sprite.text = `Lives: ${this.playerLives}`;
             }
         }
         
