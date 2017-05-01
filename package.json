@@ -14,23 +14,16 @@
     "browserify": "^14.3.0",
     "command-line-args": "^4.0.3",
     "domain": "0.0.1",
-    "event-stream": "^3.3.4",
-    "globby": "^6.1.0",
     "gulp": "^3.9.1",
-    "gulp-babel": "^6.1.2",
     "gulp-browserify": "^0.5.1",
     "gulp-clean": "^0.3.2",
-    "gulp-inject": "^4.2.0",
-    "gulp-rename": "^1.2.2",
     "gulp-sourcemaps": "^2.6.0",
     "gulp-tap": "^0.4.2",
+    "gulp-uglify": "^2.1.2",
     "gulp-util": "^3.0.8",
     "pump": "^1.0.2",
     "run-sequence": "^1.2.2",
-    "through2": "^2.0.3",
-    "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.9.0"
+    "vinyl-buffer": "^1.0.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

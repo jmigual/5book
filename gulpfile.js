@@ -5,21 +5,15 @@ const gulp            = require('gulp');
 const gutil           = require('gulp-util');
 const pump            = require('pump');
 const commandLineArgs = require('command-line-args');
-const babel           = require('gulp-babel');
 const clean           = require('gulp-clean');
 const tap             = require('gulp-tap');
 const browserify      = require('browserify');
-const through         = require('through2');
 const sourcemaps      = require('gulp-sourcemaps');
 const buffer          = require('vinyl-buffer');
-const source          = require('vinyl-source-stream');
-const globby          = require('globby');
-const inject          = require('gulp-inject');
-const rename          = require('gulp-rename');
-const es              = require('event-stream');
 const runSequence     = require('run-sequence');
 const babelify        = require('babelify');
 const domain          = require("domain");
+const uglify          = require('gulp-uglify');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -27,7 +21,7 @@ const optionDefinitions = [
 const options           = commandLineArgs(optionDefinitions, { partial: true });
 const debug             = options["type"] === "debug";
 
-gulp.task('js', () => {    
+gulp.task('js', () => {
     return pump(
         gulp.src("public/**/*.js"),
         tap(function (file) {
@@ -51,12 +45,14 @@ gulp.task('js', () => {
                 }).transform(babelify, {
                     // Use all of the ES2015 spec
                     presets   : ["es2015"],
+                    compact   : true,
                     sourceMaps: true
                 }).bundle();
             });
         }),
         buffer(),
         sourcemaps.init({ loadMaps: true }),
+        uglify(),
         sourcemaps.write("./"),
         gulp.dest("build")
     );
