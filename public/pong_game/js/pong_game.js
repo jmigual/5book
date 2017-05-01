@@ -227,7 +227,9 @@ $(document).ready(function () {
         let gameData = {
             mode       : GAME_MODES.PLAYING,
             playerLives: null,
-            lastTime   : null
+            lastTime   : null,
+            currentLine: 0,
+            lineCounter: null
         };
         
         let gameObject = {
@@ -315,7 +317,10 @@ $(document).ready(function () {
             }
             
             gameObject.brickLines[0].forEach(brick => brick.toBorder());
-            gameObject.allSpriteBody = gameObject.allSpriteBody.concat([].concat.apply([], gameObject.brickLines));
+            gameObject.brickLines.forEach(line => line.forEach(brick => {
+                stage.addChild(brick.sprite);
+                world.addBody(brick.body);
+            }))
         }
         
         function setupKeys() {
