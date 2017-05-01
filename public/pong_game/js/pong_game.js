@@ -22,7 +22,7 @@ $(document).ready(function () {
         // OBJECTS DEFINITIONS //
         /////////////////////////
         
-        class GameBodySpriteObject {
+        class GameBodySprite {
             constructor(x, y, width, height, spriteName, bodyOptions) {
                 if (!bodyOptions) bodyOptions = {
                     collisionResponse: true,
@@ -52,7 +52,7 @@ $(document).ready(function () {
             }
         }
         
-        class GameBall extends GameBodySpriteObject {
+        class GameBall extends GameBodySprite {
             constructor(x, y) {
                 const width  = 20,
                       height = 20;
@@ -83,7 +83,7 @@ $(document).ready(function () {
             }
         }
         
-        class GameBrick extends GameBodySpriteObject {
+        class GameBrick extends GameBodySprite {
             constructor(name, x, y, width, height) {
                 if (typeof(width) === "undefined") width = BRICK_WIDTH;
                 if (typeof(height) === "undefined") height = BRICK_HEIGHT;
@@ -99,6 +99,7 @@ $(document).ready(function () {
                 
                 this._body.position = [x + width/2, y + height/2];
                 this._body.addShape(new p2.Box({ width: width, height: height }));
+                this._body.collisionResponse = false;
             }
             
             toBorder() {
@@ -117,7 +118,7 @@ $(document).ready(function () {
             };
         }
         
-        class GameBar extends GameBodySpriteObject {
+        class GameBar extends GameBodySprite {
             constructor(x, y) {
                 const width  = 100,
                       height = 20;
@@ -230,12 +231,12 @@ $(document).ready(function () {
         };
         
         let gameObject = {
-            ball      : null,
-            playerBar : null,
-            topBar    : null,
-            brickLines: [],
-            allBody   : [],
-            all       : []
+            ball         : null,
+            playerBar    : null,
+            topBar       : null,
+            brickLines   : [],
+            allSpriteBody: [],
+            all          : []
         };
         
         function setup() {
@@ -247,7 +248,7 @@ $(document).ready(function () {
             
             // Add ball to the top center of the screen
             gameObject.ball = new GameBall();
-            gameObject.allBody.push(gameObject.ball);
+            gameObject.allSpriteBody.push(gameObject.ball);
             
             // Create world boundaries
             world.addBody(createPlane({ position: [0, 0], angle: -Math.PI/2 })); // Left
@@ -258,7 +259,7 @@ $(document).ready(function () {
             
             // GameBar
             gameObject.playerBar = new GameBar();
-            gameObject.allBody.push(gameObject.playerBar);
+            gameObject.allSpriteBody.push(gameObject.playerBar);
             
             // Configure contacts
             world.on("beginContact", function (evt) {
@@ -278,10 +279,12 @@ $(document).ready(function () {
             gameObject.all.push(gameData.playerLives);
             
             // Add all the elements to the stage
-            gameObject.allBody.forEach(element => {
+            gameObject.allSpriteBody.forEach(element => {
                 stage.addChild(element.sprite);
-                world.addChild(element.body);
+                world.addBody(element.body);
             });
+            
+            gameObject.all = gameObject.all.concat(gameObject.allSpriteBody);
             
             setupKeys();
             
@@ -310,9 +313,9 @@ $(document).ready(function () {
                 }
                 gameObject.brickLines.push(bLine);
             }
-                     
+            
             gameObject.brickLines[0].forEach(brick => brick.toBorder());
-            gameObject.allBody.concat([].concat.apply([], gameObject.brickLines));
+            gameObject.allSpriteBody = gameObject.allSpriteBody.concat([].concat.apply([], gameObject.brickLines));
         }
         
         function setupKeys() {
@@ -398,6 +401,9 @@ $(document).ready(function () {
             
         }
         
+        //////////////////////
+        // HELPER FUNCTIONS //
+        //////////////////////
         
         function keyboard(keyCode) {
             let key         = {};
