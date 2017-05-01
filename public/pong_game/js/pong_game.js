@@ -119,12 +119,9 @@ $(document).ready(function () {
         }
         
         class GameBar extends GameBodySprite {
-            constructor(x, y) {
+            constructor(x, y, minX, maxX) {
                 const width  = 100,
                       height = 20;
-                
-                if (!x) x = $(window).width()/2;
-                if (!y) y = 20;
                 
                 super(x, y, width, height, "bar");
                 
@@ -134,6 +131,8 @@ $(document).ready(function () {
                 
                 this.VELOCITY = 150;
                 this.vx       = 0;
+                this._minX    = minX;
+                this._maxX    = maxX;
             }
             
             goRight() {
@@ -150,8 +149,13 @@ $(document).ready(function () {
             
             update(deltaTime) {
                 const dx = deltaTime*this.vx;
-                this._body.position[0] += dx;
-                this._sprite.position.x += dx;
+                const x0 = this._body.position[0];
+                const x = x0 + dx;
+                
+                if (x + this._sprite.width/2 <= this._maxX && x - this._sprite.width/2 >= this._minX) {
+                    this._body.position[0] = x;
+                    this._sprite.position.x = x;
+                }
             }
         }
         
@@ -260,7 +264,7 @@ $(document).ready(function () {
             world.addBody(gameObject.topBar);
             
             // GameBar
-            gameObject.playerBar = new GameBar();
+            gameObject.playerBar = new GameBar(renderer.width/2, 20, 0, renderer.width - 1);
             gameObject.allSpriteBody.push(gameObject.playerBar);
             
             // Configure contacts
@@ -270,7 +274,7 @@ $(document).ready(function () {
                     console.log("Game finished");
                     gameData.playerLives.playerLives--;
                     if (gameData.playerLives.playerLives < 0) {
-                        gameData.mode = GAME_MODES.FINISHED_LOOSE;
+                        //gameData.mode = GAME_MODES.FINISHED_LOOSE;
                     }
                 }
             });
