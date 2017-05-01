@@ -18,6 +18,17 @@ $(document).ready(function () {
 
 (function ($) {
     $.fn.PongGame = function () {
+        // Aliases for PIXI
+        const Sprite    = PIXI.Sprite,
+              Container = PIXI.Container,
+              loader    = PIXI.loader,
+              resources = loader.resources;
+        
+        // Aliases for p2
+        const vec2 = p2.vec2,
+              Body = p2.Body;
+        
+        
         /////////////////////////
         // OBJECTS DEFINITIONS //
         /////////////////////////
@@ -62,9 +73,8 @@ $(document).ready(function () {
                 
                 // Call parent constructor
                 super(x, y, width, height, "ball", {
-                    type    : p2.Body.DYNAMIC,
-                    mass    : 1,
-                    velocity: [20, 150]
+                    type: p2.Body.DYNAMIC,
+                    mass: 1
                 });
                 
                 this._body.addShape(new p2.Circle({ radius: (width + height)/4 }));
@@ -73,13 +83,21 @@ $(document).ready(function () {
                 
                 this._sprite.anchor.x = 0.5;
                 this._sprite.anchor.y = 0.5;
+                this.VELOCITY         = 200;
+                
+                let v               = vec2.normalize(vec2.create(), vec2.fromValues(Math.random(), Math.random()*2));
+                this._body.velocity = vec2.scale(vec2.create(), v, this.VELOCITY);
             }
             
             update() {
                 this._sprite.x = this._body.interpolatedPosition[0];
                 this._sprite.y = this._body.interpolatedPosition[1];
-                //console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
-                //console.log("Velocity:", this._body.velocity);
+                console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
+                console.log("Velocity:", this._body.velocity);
+                
+                // Set constant velocity to the ball
+                let v               = this._body.velocity;
+                this._body.velocity = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
             }
         }
         
@@ -100,22 +118,30 @@ $(document).ready(function () {
                 this._body.position = [x + width/2, y + height/2];
                 this._body.addShape(new p2.Box({ width: width, height: height }));
                 this._body.collisionResponse = false;
+                this.name                    = this.GRAY_NAME;
             }
             
             toBorder() {
                 this._body.collisionResponse = true;
                 this._sprite.texture         = resources[this.GRAY_BORDER_NAME].texture;
+                this.name                    = this.GRAY_BORDER_NAME;
             };
             
             toNormal() {
                 this._body.collisionResponse = true;
                 this._sprite.texture         = resources[this.NORMAL_NAME].texture;
+                this.name                    = this.NORMAL_NAME;
             };
             
             toGray() {
                 this._body.collisionResponse = false;
                 this._sprite.texture         = resources[this.GRAY_NAME].texture;
+                this.name                    = this.GRAY_NAME;
             };
+            
+            isNormal() {
+                return this.name === this.NORMAL_NAME;
+            }
         }
         
         class GameBar extends GameBodySprite {
@@ -129,7 +155,7 @@ $(document).ready(function () {
                 this._sprite.anchor.x = 0.5;
                 this._sprite.anchor.y = 0.5;
                 
-                this.VELOCITY = 150;
+                this.VELOCITY = 200;
                 this.vx       = 0;
                 this._minX    = minX;
                 this._maxX    = maxX;
@@ -150,10 +176,10 @@ $(document).ready(function () {
             update(deltaTime) {
                 const dx = deltaTime*this.vx;
                 const x0 = this._body.position[0];
-                const x = x0 + dx;
+                const x  = x0 + dx;
                 
                 if (x + this._sprite.width/2 <= this._maxX && x - this._sprite.width/2 >= this._minX) {
-                    this._body.position[0] = x;
+                    this._body.position[0]  = x;
                     this._sprite.position.x = x;
                 }
             }
@@ -161,8 +187,8 @@ $(document).ready(function () {
         
         class GameLivesDisplay {
             constructor() {
-                this.playerLives = 3;
-                this._sprite     = new PIXI.Text("");
+                this.lives   = 3;
+                this._sprite = new PIXI.Text("");
                 this._sprite.position.set(20, 20);
             }
             
@@ -171,19 +197,13 @@ $(document).ready(function () {
             }
             
             update() {
-                this._sprite.text = `Lives: ${this.playerLives}`;
+                this._sprite.text = `Lives: ${this.lives}`;
             }
         }
         
         //////////////////
         // MAIN PROGRAM //
         //////////////////
-        
-        // Aliases for PIXI
-        const Sprite    = PIXI.Sprite,
-              Container = PIXI.Container,
-              loader    = PIXI.loader,
-              resources = loader.resources;
         
         // Constants definition
         const HOME_ROWS    = 10,
@@ -206,8 +226,8 @@ $(document).ready(function () {
         let world;
         
         $(this).html(renderer.view);
-        renderer.backgroundColor   = 0xFFFFFF;
-        renderer.transparent       = true;
+        renderer.backgroundColor = 0xFFFFFF;
+        renderer.transparent     = true;
         
         // Images for sprites
         const images = [
@@ -230,15 +250,16 @@ $(document).ready(function () {
         // Define variables that might be used in more than one function
         let gameData = {
             mode       : GAME_MODES.PLAYING,
-            playerLives: null,
             lastTime   : null,
             currentLine: 0,
-            lineCounter: null
+            lineCounter: null,
+            incLine    : false
         };
         
         let gameObject = {
             ball         : null,
             playerBar    : null,
+            livesDisplay : null,
             topBar       : null,
             brickLines   : [],
             allSpriteBody: [],
@@ -268,21 +289,12 @@ $(document).ready(function () {
             gameObject.allSpriteBody.push(gameObject.playerBar);
             
             // Configure contacts
-            world.on("beginContact", function (evt) {
-                if ((evt.bodyA === gameObject.ball.body || evt.bodyB === gameObject.ball.body) &&
-                    (evt.bodyA === gameObject.topBar || evt.bodyB === gameObject.topBar)) {
-                    console.log("Game finished");
-                    gameData.playerLives.playerLives--;
-                    if (gameData.playerLives.playerLives < 0) {
-                        //gameData.mode = GAME_MODES.FINISHED_LOOSE;
-                    }
-                }
-            });
+            world.on("beginContact", worldContact);
             
-            // Add playerLives text
-            gameData.playerLives = new GameLivesDisplay();
-            stage.addChild(gameData.playerLives.sprite);
-            gameObject.all.push(gameData.playerLives);
+            // Add livesDisplay text
+            gameObject.livesDisplay = new GameLivesDisplay();
+            stage.addChild(gameObject.livesDisplay.sprite);
+            gameObject.all.push(gameObject.livesDisplay);
             
             // Add all the elements to the stage
             gameObject.allSpriteBody.forEach(element => {
@@ -293,6 +305,9 @@ $(document).ready(function () {
             gameObject.all = gameObject.all.concat(gameObject.allSpriteBody);
             
             setupKeys();
+            
+            gameData.currentLine = 0;
+            gameData.lineCounter = gameObject.brickLines[gameData.currentLine].length;
             
             console.log("Setup finished");
             gameLoop(0);
@@ -335,7 +350,6 @@ $(document).ready(function () {
             };
             
             keys.left.press = function () {
-                console.log("left");
                 gameObject.playerBar.goLeft();
             };
             
@@ -346,7 +360,6 @@ $(document).ready(function () {
             };
             
             keys.right.press = function () {
-                console.log("right");
                 gameObject.playerBar.goRight();
             };
             
@@ -465,5 +478,40 @@ $(document).ready(function () {
             renderer.view.style.width  = w + 'px';
             renderer.view.style.height = h + 'px';
         });
+        
+        function worldContact(event) {
+            let elements = getContactElements(event);
+            if (!elements) return;
+            
+            let { other: otherBody } = elements;
+            if (otherBody === gameObject.topBar) {
+                gameObject.livesDisplay.lives--;
+                if (gameObject.livesDisplay.lives <= 0) {
+                    // Deactivated due to debug
+                    //gameData.mode = GAME_MODES.FINISHED_LOOSE;
+                }
+            } else if (gameData.incLine && otherBody === gameObject.playerBar.body) {
+                ++gameData.currentLine;
+                gameObject.brickLines[gameData.currentLine].forEach(brick => brick.toBorder());
+            } else {
+                getBrick(otherBody).forEach(brick => {
+                    brick.toNormal();
+                    gameData.incLine = (!brick.isNormal() && --gameData.lineCounter <= 0)
+                });
+            }
+        }
+        
+        function getContactElements(event) {
+            if (event.bodyA === gameObject.ball.body) {
+                return { ball: event.bodyA, other: event.bodyB };
+            } else if (event.bodyB === gameObject.ball.body) {
+                return { ball: event.bodyB, other: event.bodyA };
+            }
+            return null;
+        }
+        
+        function getBrick(body) {
+            return gameObject.brickLines[gameData.currentLine].filter(brick => brick.body === body);
+        }
     }
 }($));
