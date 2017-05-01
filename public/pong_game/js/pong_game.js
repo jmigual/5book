@@ -196,12 +196,12 @@ $(document).ready(function () {
               };
         
         // Configure renderer
-        const renderer = PIXI.autoDetectRenderer($(window).width(), $(window).height()),
-              stage    = new Container();
+        const renderer = PIXI.autoDetectRenderer($(this).width(), $(this).height()),
+              stage    = new Container(),
+              ratio    = $(this).width()/$(this).height();
         let world;
         
         $(this).html(renderer.view);
-        renderer.view.style.border = "1px dashed black";
         renderer.backgroundColor   = 0xFFFFFF;
         renderer.transparent       = true;
         
@@ -447,5 +447,14 @@ $(document).ready(function () {
             body.addShape(new p2.Plane());
             return body;
         }
+        
+        $(this).resize(() => {
+            let w = $(this).width(),
+                h = $(this).height();
+            $(this).width()/$(this).height() >= ratio ? w *= ratio : h /= ratio;
+            
+            renderer.view.style.width  = w + 'px';
+            renderer.view.style.height = h + 'px';
+        });
     }
 }($));
