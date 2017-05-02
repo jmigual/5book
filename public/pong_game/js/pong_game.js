@@ -84,6 +84,7 @@ $(document).ready(function () {
                 this._sprite.anchor.x = 0.5;
                 this._sprite.anchor.y = 0.5;
                 this.VELOCITY         = 250;
+                this.VY = 200;
                 
                 let v               = vec2.normalize(vec2.create(), vec2.fromValues(Math.random(), Math.random()*2));
                 this._body.velocity = vec2.scale(vec2.create(), v, this.VELOCITY);
@@ -97,7 +98,9 @@ $(document).ready(function () {
                 
                 // Set constant velocity to the ball
                 let v               = this._body.velocity;
-                this._body.velocity = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
+                v = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
+                v[1] = this.VY*(v[1]/Math.abs(v[1]));
+                this._body.velocity = v;
             }
         }
         
@@ -504,11 +507,11 @@ $(document).ready(function () {
                 gameData.lineCounter = gameObject.brickLines[gameData.currentLine].length;
             } else {
                 getBrick(otherBody).forEach(brick => {
-                    if (brick.isNormal()) --gameData.lineCounter;
+                    if (!brick.isNormal()) --gameData.lineCounter;
                     
                     gameData.incLine = gameData.lineCounter <= 0;
+                    console.log(gameData.lineCounter, gameData.incLine, brick.isNormal());
                     brick.toNormal();
-                    console.log(gameData.lineCounter);
                 });
             }
         }
