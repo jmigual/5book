@@ -26,7 +26,7 @@
     "vinyl-buffer": "^1.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "install": "gulp rebuild"
   },
   "repository": {
     "type": "git",

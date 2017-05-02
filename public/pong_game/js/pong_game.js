@@ -83,7 +83,7 @@ $(document).ready(function () {
                 
                 this._sprite.anchor.x = 0.5;
                 this._sprite.anchor.y = 0.5;
-                this.VELOCITY         = 200;
+                this.VELOCITY         = 250;
                 
                 let v               = vec2.normalize(vec2.create(), vec2.fromValues(Math.random(), Math.random()*2));
                 this._body.velocity = vec2.scale(vec2.create(), v, this.VELOCITY);
@@ -92,8 +92,8 @@ $(document).ready(function () {
             update() {
                 this._sprite.x = this._body.interpolatedPosition[0];
                 this._sprite.y = this._body.interpolatedPosition[1];
-                console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
-                console.log("Velocity:", this._body.velocity);
+                //console.log("Ball:", this._sprite.x.toFixed(2), this._sprite.y.toFixed(2));
+                //console.log("Velocity:", this._body.velocity);
                 
                 // Set constant velocity to the ball
                 let v               = this._body.velocity;
@@ -155,7 +155,7 @@ $(document).ready(function () {
                 this._sprite.anchor.x = 0.5;
                 this._sprite.anchor.y = 0.5;
                 
-                this.VELOCITY = 200;
+                this.VELOCITY = 250;
                 this.vx       = 0;
                 this._minX    = minX;
                 this._maxX    = maxX;
@@ -197,7 +197,7 @@ $(document).ready(function () {
             }
             
             update() {
-                this._sprite.text = `Lives: ${this.lives}`;
+                this._sprite.text = `Vides: ${this.lives}`;
             }
         }
         
@@ -207,7 +207,7 @@ $(document).ready(function () {
         
         // Constants definition
         const HOME_ROWS    = 10,
-              HOME_COLUMNS = 10,
+              HOME_COLUMNS = 5,
               BRICK_WIDTH  = 40,
               BRICK_HEIGHT = 20,
               IMG_PATH     = "img/", // Base path for the images,
@@ -490,13 +490,25 @@ $(document).ready(function () {
                     // Deactivated due to debug
                     //gameData.mode = GAME_MODES.FINISHED_LOOSE;
                 }
-            } else if (gameData.incLine && otherBody === gameObject.playerBar.body) {
+            } else if (gameData.incLine && otherBody === gameObject.playerBar.body) {                
                 ++gameData.currentLine;
+                if (gameData.currentLine > gameObject.brickLines.length) {
+                    // The user has won
+                    //gameData.mode = GAME_MODES.FINISHED_WON;
+                    return;
+                }
+                
                 gameObject.brickLines[gameData.currentLine].forEach(brick => brick.toBorder());
+                
+                gameData.incLine = false;
+                gameData.lineCounter = gameObject.brickLines[gameData.currentLine].length;
             } else {
                 getBrick(otherBody).forEach(brick => {
+                    if (brick.isNormal()) --gameData.lineCounter;
+                    
+                    gameData.incLine = gameData.lineCounter <= 0;
                     brick.toNormal();
-                    gameData.incLine = (!brick.isNormal() && --gameData.lineCounter <= 0)
+                    console.log(gameData.lineCounter);
                 });
             }
         }
