@@ -26,7 +26,6 @@
     "vinyl-buffer": "^1.0.0"
   },
   "scripts": {
-    "install": "gulp rebuild"
   },
   "repository": {
     "type": "git",

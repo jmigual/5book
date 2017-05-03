@@ -84,7 +84,7 @@ $(document).ready(function () {
                 this._sprite.anchor.x = 0.5;
                 this._sprite.anchor.y = 0.5;
                 this.VELOCITY         = 250;
-                this.VY = 200;
+                this.VY = 230;
                 
                 let v               = vec2.normalize(vec2.create(), vec2.fromValues(Math.random(), Math.random()*2));
                 this._body.velocity = vec2.scale(vec2.create(), v, this.VELOCITY);
@@ -209,7 +209,7 @@ $(document).ready(function () {
         //////////////////
         
         // Constants definition
-        const HOME_ROWS    = 10,
+        const HOME_ROWS    = 5,
               HOME_COLUMNS = 5,
               BRICK_WIDTH  = 40,
               BRICK_HEIGHT = 20,
