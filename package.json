@@ -1,6 +1,6 @@
 {
   "name": "5book",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Reading made simple",
   "main": "app.js",
   "dependencies": {
@@ -25,8 +25,7 @@
     "run-sequence": "^1.2.2",
     "vinyl-buffer": "^1.0.0"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://jmigual@github.com/jmigual/5book.git"
