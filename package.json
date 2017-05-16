@@ -1,6 +1,6 @@
 {
   "name": "5book",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Reading made simple",
   "main": "app.js",
   "dependencies": {
