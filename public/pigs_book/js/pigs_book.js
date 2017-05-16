@@ -1,6 +1,7 @@
 const $    = require('jquery');
 const PIXI = require('pixi.js');
 const p2   = require('p2');
+require('./sketch.js');
 
 window.requestAnimationFrame = (function () {
     return window.requestAnimationFrame ||
@@ -11,10 +12,6 @@ window.requestAnimationFrame = (function () {
             window.setTimeout(callback, 1000/30);
         };
 })();
-
-$(document).ready(function () {
-    $("#pong-game-canvas").PongGame();
-});
 
 (function ($) {
     $.fn.PongGame = function () {
@@ -510,7 +507,7 @@ $(document).ready(function () {
                     if (!brick.isNormal()) --gameData.lineCounter;
                     
                     gameData.incLine = gameData.lineCounter <= 0;
-                    console.log(gameData.lineCounter, gameData.incLine, brick.isNormal());
+                    //console.log(gameData.lineCounter, gameData.incLine, brick.isNormal());
                     brick.toNormal();
                 });
             }
@@ -530,3 +527,18 @@ $(document).ready(function () {
         }
     }
 }($));
+
+$(document).ready(function () {
+    $("#pong-game-canvas").PongGame();
+    
+    /*$.each(['#f00', '#ff0', '#0f0', '#0ff', '#00f', '#f0f', '#000', '#fff'], function() {
+        $('.paint-canvas.tools').append(`<a class="w3-col" href='#colors_sketch' data-color='${this}' style='width: 10px; background: ${this};'></a> `);
+    });
+    $.each([3, 5, 10, 15], function() {
+        $('.paint-canvas.tools').append(`<a class="w3-col" href='#colors_sketch' data-size='${this}' style='background: #ccc'>${this}</a> `);
+    });*/
+    const elem = $(".paint-canvas-view");
+    elem.sketch();
+    elem.sketch().redraw();
+});
+
