@@ -223,7 +223,7 @@ $(document).ready(function () {
               };
         
         // Configure renderer
-        const renderer = PIXI.autoDetectRenderer($(this).width(), $(this).height()),
+        const renderer = PIXI.autoDetectRenderer($(this).width(), $(window).height()),
               stage    = new Container(),
               ratio    = $(this).width()/$(this).height();
         let world;
