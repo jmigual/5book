@@ -14,6 +14,7 @@ const runSequence     = require('run-sequence');
 const babelify        = require('babelify');
 const domain          = require("domain");
 const uglify          = require('gulp-uglify');
+const changed         = require("gulp-changed");
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -24,6 +25,7 @@ const debug             = options["type"] === "debug";
 gulp.task('js', () => {
     return pump(
         gulp.src("public/**/*.js"),
+        changed("build"),
         tap(function (file) {
             let d = domain.create();
             
@@ -61,6 +63,15 @@ gulp.task('js', () => {
 gulp.task("html", function () {
     return pump([
         gulp.src('public/**/*.html'),
+        changed("build"),
+        gulp.dest('build')
+    ])
+});
+
+gulp.task("css", function () {
+    return pump([
+        gulp.src('public/**/*.css'),
+        changed("build"),
         gulp.dest('build')
     ])
 });
@@ -68,6 +79,7 @@ gulp.task("html", function () {
 gulp.task("img", function () {
     return pump([
         gulp.src('public/**/*.png'),
+        changed("build"),
         gulp.dest('build')
     ])
 });
@@ -81,7 +93,7 @@ gulp.task('clean', function () {
 
 gulp.task('default', function (done) {
     gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
-    runSequence(['js', 'html', 'img'], done);
+    runSequence(['js', 'html', 'img', 'css'], done);
 });
 
 gulp.task('rebuild', function (done) {
