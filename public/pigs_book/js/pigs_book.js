@@ -1,6 +1,7 @@
-const $    = require('jquery');
-const PIXI = require('pixi.js');
-const p2   = require('p2');
+const $      = require('jquery');
+const PIXI   = require('pixi.js');
+const p2     = require('p2');
+const marked = require('marked');
 require('./sketch.js');
 
 window.requestAnimationFrame = (function () {
@@ -81,7 +82,7 @@ window.requestAnimationFrame = (function () {
                 this._sprite.anchor.x = 0.5;
                 this._sprite.anchor.y = 0.5;
                 this.VELOCITY         = 250;
-                this.VY = 230;
+                this.VY               = 230;
                 
                 let v               = vec2.normalize(vec2.create(), vec2.fromValues(Math.random(), Math.random()*2));
                 this._body.velocity = vec2.scale(vec2.create(), v, this.VELOCITY);
@@ -95,8 +96,8 @@ window.requestAnimationFrame = (function () {
                 
                 // Set constant velocity to the ball
                 let v               = this._body.velocity;
-                v = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
-                v[1] = this.VY*(v[1]/Math.abs(v[1]));
+                v                   = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
+                v[1]                = this.VY*(v[1]/Math.abs(v[1]));
                 this._body.velocity = v;
             }
         }
@@ -490,7 +491,7 @@ window.requestAnimationFrame = (function () {
                     // Deactivated due to debug
                     //gameData.mode = GAME_MODES.FINISHED_LOOSE;
                 }
-            } else if (gameData.incLine && otherBody === gameObject.playerBar.body) {                
+            } else if (gameData.incLine && otherBody === gameObject.playerBar.body) {
                 ++gameData.currentLine;
                 if (gameData.currentLine > gameObject.brickLines.length) {
                     // The user has won
@@ -500,7 +501,7 @@ window.requestAnimationFrame = (function () {
                 
                 gameObject.brickLines[gameData.currentLine].forEach(brick => brick.toBorder());
                 
-                gameData.incLine = false;
+                gameData.incLine     = false;
                 gameData.lineCounter = gameObject.brickLines[gameData.currentLine].length;
             } else {
                 getBrick(otherBody).forEach(brick => {
@@ -531,12 +532,10 @@ window.requestAnimationFrame = (function () {
 $(document).ready(function () {
     $("#pong-game-canvas").PongGame();
     
-    /*$.each(['#f00', '#ff0', '#0f0', '#0ff', '#00f', '#f0f', '#000', '#fff'], function() {
-        $('.paint-canvas.tools').append(`<a class="w3-col" href='#colors_sketch' data-color='${this}' style='width: 10px; background: ${this};'></a> `);
+    $(".marktext").each(function () {
+        $(this).html(marked($(this).text()));
     });
-    $.each([3, 5, 10, 15], function() {
-        $('.paint-canvas.tools').append(`<a class="w3-col" href='#colors_sketch' data-size='${this}' style='background: #ccc'>${this}</a> `);
-    });*/
+    
     const elem = $(".paint-canvas-view");
     elem.sketch();
     elem.sketch().redraw();
