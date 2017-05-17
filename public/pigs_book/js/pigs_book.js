@@ -532,7 +532,7 @@ window.requestAnimationFrame = (function () {
 $(document).ready(function () {
     $("#pong-game-canvas").PongGame();
     
-    $(".marktext").each(function () {
+    $(".markdown").each(function () {
         $(this).html(marked($(this).text()));
     });
     

@@ -1,5 +1,5 @@
 * {
-    font-family: Helvetica,serif;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 blockquote > p:before {
@@ -19,6 +19,10 @@ blockquote > p {
     width: 100%;
     height: 100%;
     background-color: white;
+}
+
+.markdown {
+    padding: 0 60px 0 60px;
 }
 
 #main-container {
