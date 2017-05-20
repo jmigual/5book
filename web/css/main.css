@@ -1,0 +1,36 @@
+@font-face {
+    font-family: "Helvetica Neue Light";
+    src: url("fonts/HelveticaNeueLight.ttf")
+}
+
+* {
+    font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+}
+
+blockquote > p:before {
+    content: "- ";
+}
+
+blockquote > p {
+    margin: 0 0 0 0;
+}
+
+.canvas-view {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+.markdown {
+    padding: 0 60px 0 60px;
+    font-size: large;
+}
+
+.element-book {
+    width: 90%;
+    height: 80%;
+}
+
+.fp-section {
+    background: url("../img/rendered/fons_general.png") repeat-y;
+}

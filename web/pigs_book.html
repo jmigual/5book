@@ -3,71 +3,73 @@
 <head>
   <meta charset="UTF-8">
   <title>Joc del llop</title>
+  <link rel="stylesheet" type="text/css" href="css/jquery.fullpage.min.css">
   <link rel="stylesheet" type="text/css" href="css/w3.css">
-  <style>
-    * {
-      font-family: Helvetica,serif;
-    }
-
-    blockquote > p:before {
-      content: "- ";
-    }
-
-    blockquote > p {
-      margin: 0 0 0 0;
-    }
-
-    .paint-canvas-container {
-      width: 90%;
-      height: 80%;
-    }
-
-    .paint-canvas-view {
-      width: 100%;
-      height: 100%;
-      background-color: white;
-    }
-
-    #main-container {
-      background: url("img/llibre/fons general.png") repeat-y;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-<div id="main-container" class="w3-content w3-padding" style="max-width: 950px">
+<div id="main-container" class="w3-content" style="max-width: 900px">
   <!-- Header with selector -->
-  <div class="w3-display-container w3-margin-bottom">
-    <h1 class="w3-display-topmiddle w3-center" style="font-size: 80px"><b>Els tres porquets</b></h1>
-    <img src="img/llibre/imatge_portada.png" class="w3-image">
+  <div class="fp-section">
+    <div class="w3-display-container">
+      <h1 class="w3-display-topmiddle w3-center" style="font-size: 80px"><b>Els tres porquets</b></h1>
+      <img src="img/rendered/imatge_portada.png" class="w3-image">
+    </div>
   </div>
-
-<div class="marktext">
-# Header
-
-> Ara només necessitem una casa -va dir el més gran dels tres.
+  
+  <div class="fp-section">
+    <div class="markdown w3-left-align">
+> Ara només necessitem una casa‒va dir el més gran dels tres.
 
 > Tinc una idea, podem comprar maons i fer-nos una casa per viure-hi plegats.
 
 Però als seus germans no els va agradar gaire la idea.
 
-> No en tinc ganes -va dir el més petit- Els maons pesen massa. Jo agafaré canyes i palla
+> No en tinc ganes‒va dir el més petit‒Els maons pesen massa. Jo agafaré canyes i palla
 i em faré una casa.
 
 
-> Jo tampoc no vull treballar -va dir el mitjà- Jo recolliré branques i faré una casa de fusta.
+> Jo tampoc no vull treballar‒va dir el mitjà‒Jo recolliré branques i faré una casa de fusta.
 
 Després de discutir una estona, van pensar que seria millor que cadascú es construís la seva pròpia casa.
-</div>
-
-  <!-- Drawing 1 -->
-  <div class="w3-display-container w3-margin-bottom">
-    <img src="img/llibre/imaginebook.png" class="w3-image">
-    <div class="w3-display-bottommiddle w3-margin-bottom paint-canvas-container" style="width: 90%; height: 80%">
-      <canvas class="paint-canvas-view w3-border"></canvas>
     </div>
   </div>
-  <div class="w3-margin-bottom">
-    <div class="w3-border" id="pong-game-canvas"></div>
+
+  <!-- Drawing 1 -->
+  <div class="fp-section">
+    <div class="w3-display-container">
+      <img src="img/rendered/imaginebook.png" class="w3-image">
+      <div class="w3-display-bottommiddle w3-margin-bottom element-book">
+        <canvas class="canvas-view w3-border"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="fp-section">
+    <div class="w3-row">
+      <div class="markdown w3-left-align w3-half">
+En canvi, el més gran, va posar-se a
+treballar de valent. No parava de
+portar totxos amunt i avall i de mica
+en mica va anar aixecant una casa
+molt sòlida amb un sostre ben
+resistent capaç d'aguantar pluja i neu.
+Suava la cansalada, però no va parar
+de pencar mentre els seus germans
+jugaven a voleibol
+      </div>
+      <div class="w3-half">
+        <img src="img/rendered/porc_per_la_meitat.png" class="w3-image">
+      </div>
+    </div>
+  
+    <!-- Game 1 -->
+    <div class="w3-display-container">
+      <img src="img/rendered/playbook_small.png" class="w3-image">
+      <div class="w3-display-bottommiddle element-book w3-padding">
+        <div id="pong-game-canvas" class="w3-border" style="width: 100%; height: 100%;"></div>
+      </div>
+    </div>
   </div>
 </div>
 
