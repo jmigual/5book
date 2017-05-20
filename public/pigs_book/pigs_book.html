@@ -3,18 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <title>Joc del llop</title>
+  <link rel="stylesheet" type="text/css" href="css/jquery.fullpage.min.css">
   <link rel="stylesheet" type="text/css" href="css/w3.css">
   <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
 <div id="main-container" class="w3-content" style="max-width: 900px">
   <!-- Header with selector -->
-  <div class="w3-display-container w3-margin-bottom">
-    <h1 class="w3-display-topmiddle w3-center" style="font-size: 80px"><b>Els tres porquets</b></h1>
-    <img src="img/rendered/imatge_portada.png" class="w3-image">
+  <div class="fp-section">
+    <div class="w3-display-container">
+      <h1 class="w3-display-topmiddle w3-center" style="font-size: 80px"><b>Els tres porquets</b></h1>
+      <img src="img/rendered/imatge_portada.png" class="w3-image">
+    </div>
   </div>
-
-<div class="markdown w3-left-align w3-large">
+  
+  <div class="fp-section">
+    <div class="markdown w3-left-align">
 > Ara només necessitem una casa‒va dir el més gran dels tres.
 
 > Tinc una idea, podem comprar maons i fer-nos una casa per viure-hi plegats.
@@ -28,21 +32,43 @@ i em faré una casa.
 > Jo tampoc no vull treballar‒va dir el mitjà‒Jo recolliré branques i faré una casa de fusta.
 
 Després de discutir una estona, van pensar que seria millor que cadascú es construís la seva pròpia casa.
-</div>
-
-  <!-- Drawing 1 -->
-  <div class="w3-display-container w3-margin-bottom">
-    <img src="img/rendered/imaginebook.png" class="w3-image">
-    <div class="w3-display-bottommiddle w3-margin-bottom element-book">
-      <canvas class="canvas-view w3-border"></canvas>
     </div>
   </div>
+
+  <!-- Drawing 1 -->
+  <div class="fp-section">
+    <div class="w3-display-container">
+      <img src="img/rendered/imaginebook.png" class="w3-image">
+      <div class="w3-display-bottommiddle w3-margin-bottom element-book">
+        <canvas class="canvas-view w3-border"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="fp-section">
+    <div class="w3-row">
+      <div class="markdown w3-left-align w3-half">
+En canvi, el més gran, va posar-se a
+treballar de valent. No parava de
+portar totxos amunt i avall i de mica
+en mica va anar aixecant una casa
+molt sòlida amb un sostre ben
+resistent capaç d'aguantar pluja i neu.
+Suava la cansalada, però no va parar
+de pencar mentre els seus germans
+jugaven a voleibol
+      </div>
+      <div class="w3-half">
+        <img src="img/rendered/porc_per_la_meitat.png" class="w3-image">
+      </div>
+    </div>
   
-  <!-- Game 1 -->
-  <div class="w3-display-container w3-margin-bottom">
-    <img src="img/rendered/playbook_small.png" class="w3-image">
-    <div class="w3-display-bottommiddle element-book">
-      <div id="pong-game-canvas" class="canvas-view w3-border"></div>
+    <!-- Game 1 -->
+    <div class="w3-display-container">
+      <img src="img/rendered/playbook_small.png" class="w3-image">
+      <div class="w3-display-bottommiddle element-book w3-padding">
+        <div id="pong-game-canvas" class="w3-border" style="width: 100%; height: 100%;"></div>
+      </div>
     </div>
   </div>
 </div>

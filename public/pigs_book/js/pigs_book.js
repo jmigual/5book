@@ -1,9 +1,10 @@
 const $      = require('jquery');
+const jQuery = $
 const PIXI   = require('pixi.js');
 const p2     = require('p2');
 const marked = require('marked');
-require('fullpage.js');
-require('./sketch.js');
+require('./jquery.fullpage');
+require('./sketch');
 
 window.requestAnimationFrame = (function () {
     return window.requestAnimationFrame ||
@@ -540,5 +541,19 @@ $(document).ready(function () {
     const elem = $(".canvas-view");
     elem.sketch();
     elem.sketch().redraw();
+    
+    $("#main-container").fullpage({
+        verticalCentered     : true,
+        //sectionsColor        : ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
+        loopBottom           : false,
+        fitToSection         : false,
+        paddingTop           : 0,
+        sectionSelector      : ".fp-section",
+        scrollOverflow       : true,        
+        navigation: true,
+        afterLoad: function(anchorLink, index) {
+            console.log(anchorLink, index);
+        }
+    });
 });
 
