@@ -16,6 +16,7 @@ const domain          = require("domain");
 const uglify          = require('gulp-uglify');
 const changed         = require("gulp-changed");
 const imagemin        = require('gulp-imagemin');
+const newer           = require('gulp-newer');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -26,7 +27,7 @@ const debug             = options["type"] === "debug";
 gulp.task('js', () => {
     return pump(
         gulp.src("public/**/*.js"),
-        changed("build"),
+        newer("build/pigs_book/js/pigs_book.js"),
         tap(function (file) {
             let d = domain.create();
             
@@ -89,7 +90,7 @@ gulp.task("img", function () {
     return pump([
         gulp.src(['public/**/rendered/*.png', 'public/**/game/*.png']),
         changed("build"),
-        imagemin({verbose: true}),
+        imagemin({ verbose: true }),
         gulp.dest('build')
     ]);
 });

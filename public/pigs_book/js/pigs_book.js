@@ -2,6 +2,7 @@ const $      = require('jquery');
 const PIXI   = require('pixi.js');
 const p2     = require('p2');
 const marked = require('marked');
+require('fullpage.js');
 require('./sketch.js');
 
 window.requestAnimationFrame = (function () {
