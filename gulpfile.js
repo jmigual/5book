@@ -65,7 +65,7 @@ gulp.task("html", function () {
         gulp.src('public/**/*.html'),
         changed("build"),
         gulp.dest('build')
-    ])
+    ]);
 });
 
 gulp.task("css", function () {
@@ -73,7 +73,15 @@ gulp.task("css", function () {
         gulp.src('public/**/*.css'),
         changed("build"),
         gulp.dest('build')
-    ])
+    ]);
+});
+
+gulp.task("fonts", function() {
+    return pump([
+        gulp.src('public/**/*.ttf'),
+        changed("build"),
+        gulp.dest('build')
+    ]);
 });
 
 gulp.task("img", function () {
@@ -81,7 +89,7 @@ gulp.task("img", function () {
         gulp.src('public/**/*.png'),
         changed("build"),
         gulp.dest('build')
-    ])
+    ]);
 });
 
 gulp.task('clean', function () {
@@ -93,7 +101,7 @@ gulp.task('clean', function () {
 
 gulp.task('default', function (done) {
     gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
-    runSequence(['js', 'html', 'img', 'css'], done);
+    runSequence(['js', 'html', 'img', 'css', 'fonts'], done);
 });
 
 gulp.task('rebuild', function (done) {

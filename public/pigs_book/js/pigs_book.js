@@ -211,7 +211,7 @@ window.requestAnimationFrame = (function () {
               HOME_COLUMNS = 5,
               BRICK_WIDTH  = 40,
               BRICK_HEIGHT = 20,
-              IMG_PATH     = "img/game", // Base path for the images,
+              IMG_PATH     = "img/game/", // Base path for the images,
               TIME_STEP    = 1/60,
               GAME_MODES   = {
                   PLAYING       : 1,

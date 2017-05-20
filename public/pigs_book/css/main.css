@@ -1,5 +1,10 @@
+@font-face {
+    font-family: "Helvetica Neue Light";
+    src: url("fonts/HelveticaNeueLight.ttf")
+}
+
 * {
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
 blockquote > p:before {
