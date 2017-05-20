@@ -23,6 +23,7 @@ blockquote > p {
 
 .markdown {
     padding: 0 60px 0 60px;
+    font-size: large;
 }
 
 .element-book {
@@ -30,6 +31,6 @@ blockquote > p {
     height: 80%;
 }
 
-#main-container {
-    background: url("../img/llibre/fons general.png") repeat-y;
+.fp-section {
+    background: url("../img/rendered/fons_general.png") repeat-y;
 }
