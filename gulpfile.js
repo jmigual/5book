@@ -15,6 +15,7 @@ const babelify        = require('babelify');
 const domain          = require("domain");
 const uglify          = require('gulp-uglify');
 const changed         = require("gulp-changed");
+const imagemin        = require('gulp-imagemin');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -76,7 +77,7 @@ gulp.task("css", function () {
     ]);
 });
 
-gulp.task("fonts", function() {
+gulp.task("fonts", function () {
     return pump([
         gulp.src('public/**/*.ttf'),
         changed("build"),
@@ -86,8 +87,9 @@ gulp.task("fonts", function() {
 
 gulp.task("img", function () {
     return pump([
-        gulp.src('public/**/*.png'),
+        gulp.src(['public/**/rendered/*.png', 'public/**/game/*.png']),
         changed("build"),
+        imagemin({verbose: true}),
         gulp.dest('build')
     ]);
 });
