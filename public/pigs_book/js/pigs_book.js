@@ -63,8 +63,8 @@ window.requestAnimationFrame = (function () {
         
         class GameBall extends GameBodySprite {
             constructor(x, y) {
-                const width  = 20,
-                      height = 20;
+                const width  = 40,
+                      height = 40;
                 
                 if (!y) y = 40;
                 if (!x) x = $(window).width()/2;
@@ -147,8 +147,8 @@ window.requestAnimationFrame = (function () {
         
         class GameBar extends GameBodySprite {
             constructor(x, y, minX, maxX) {
-                const width  = 100,
-                      height = 20;
+                const width  = 200,
+                      height = 30;
                 
                 super(x, y, width, height, "bar");
                 
@@ -209,8 +209,8 @@ window.requestAnimationFrame = (function () {
         // Constants definition
         const HOME_ROWS    = 5,
               HOME_COLUMNS = 5,
-              BRICK_WIDTH  = 40,
-              BRICK_HEIGHT = 20,
+              BRICK_WIDTH  = 60,
+              BRICK_HEIGHT = 30,
               IMG_PATH     = "img/game/", // Base path for the images,
               TIME_STEP    = 1/60,
               GAME_MODES   = {
@@ -221,7 +221,7 @@ window.requestAnimationFrame = (function () {
               };
         
         // Configure renderer
-        const renderer = PIXI.autoDetectRenderer($(this).width(), $(window).height()/2),
+        const renderer = PIXI.autoDetectRenderer($(this).width(), $(this).height()),
               stage    = new Container(),
               ratio    = $(this).width()/$(this).height();
         let world;
@@ -536,7 +536,7 @@ $(document).ready(function () {
         $(this).html(marked($(this).text()));
     });
     
-    const elem = $(".paint-canvas-view");
+    const elem = $(".canvas-view");
     elem.sketch();
     elem.sketch().redraw();
 });
