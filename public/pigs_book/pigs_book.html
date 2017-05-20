@@ -7,11 +7,11 @@
   <link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
-<div id="main-container" class="w3-content w3-padding" style="max-width: 900px">
+<div id="main-container" class="w3-content" style="max-width: 900px">
   <!-- Header with selector -->
   <div class="w3-display-container w3-margin-bottom">
     <h1 class="w3-display-topmiddle w3-center" style="font-size: 80px"><b>Els tres porquets</b></h1>
-    <img src="img/llibre/imatge_portada.png" class="w3-image">
+    <img src="img/rendered/imatge_portada.png" class="w3-image">
   </div>
 
 <div class="markdown w3-left-align w3-large">
@@ -32,13 +32,18 @@ Després de discutir una estona, van pensar que seria millor que cadascú es con
 
   <!-- Drawing 1 -->
   <div class="w3-display-container w3-margin-bottom">
-    <img src="img/llibre/imaginebook.png" class="w3-image">
-    <div class="w3-display-bottommiddle w3-margin-bottom paint-canvas-container" style="width: 90%; height: 80%">
-      <canvas class="paint-canvas-view w3-border"></canvas>
+    <img src="img/rendered/imaginebook.png" class="w3-image">
+    <div class="w3-display-bottommiddle w3-margin-bottom element-book">
+      <canvas class="canvas-view w3-border"></canvas>
     </div>
   </div>
-  <div class="w3-margin-bottom">
-    <div class="w3-border" id="pong-game-canvas"></div>
+  
+  <!-- Game 1 -->
+  <div class="w3-display-container w3-margin-bottom">
+    <img src="img/rendered/playbook_small.png" class="w3-image">
+    <div class="w3-display-bottommiddle element-book">
+      <div id="pong-game-canvas" class="canvas-view w3-border"></div>
+    </div>
   </div>
 </div>
 

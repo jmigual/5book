@@ -8,19 +8,14 @@
 }
 
 blockquote > p:before {
-    content: "‒ ";
+    content: "- ";
 }
 
 blockquote > p {
     margin: 0 0 0 0;
 }
 
-.paint-canvas-container {
-    width: 90%;
-    height: 80%;
-}
-
-.paint-canvas-view {
+.canvas-view {
     width: 100%;
     height: 100%;
     background-color: white;
@@ -28,6 +23,11 @@ blockquote > p {
 
 .markdown {
     padding: 0 60px 0 60px;
+}
+
+.element-book {
+    width: 90%;
+    height: 80%;
 }
 
 #main-container {
