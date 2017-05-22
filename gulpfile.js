@@ -7,16 +7,15 @@ const pump            = require('pump');
 const commandLineArgs = require('command-line-args');
 const clean           = require('gulp-clean');
 const tap             = require('gulp-tap');
-const browserify      = require('browserify');
 const sourcemaps      = require('gulp-sourcemaps');
 const buffer          = require('vinyl-buffer');
 const runSequence     = require('run-sequence');
 const babelify        = require('babelify');
-const domain          = require("domain");
 const uglify          = require('gulp-uglify');
 const changed         = require("gulp-changed");
 const imagemin        = require('gulp-imagemin');
-const newer           = require('gulp-newer');
+const Browserify      = require('browserify-gulp').default;
+const browserSync = require('browser-sync').create();
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -24,42 +23,27 @@ const optionDefinitions = [
 const options           = commandLineArgs(optionDefinitions, { partial: true });
 const debug             = options["type"] === "debug";
 
-gulp.task('js', () => {
-    return pump(
-        gulp.src("public/**/*.js"),
-        newer("build/pigs_book/js/pigs_book.js"),
-        tap(function (file) {
-            let d = domain.create();
-            
-            d.on("error", err => {
-                gutil.log(
-                    gutil.colors.red("Browserify compile error:"),
-                    err.message,
-                    "\n\t",
-                    gutil.colors.cyan("in file"),
-                    file.path
-                );
-            });
-            
-            d.run(function () {
-                file.contents = browserify({
-                    entries      : [file.path],
-                    debug        : true,
-                    insertGlobals: true
-                }).transform(babelify, {
-                    // Use all of the ES2015 spec
-                    presets   : ["es2015"],
-                    compact   : true,
-                    sourceMaps: true
-                }).bundle();
-            });
-        }),
-        buffer(),
-        sourcemaps.init({ loadMaps: true }),
-        uglify(),
-        sourcemaps.write("./"),
-        gulp.dest("build")
-    );
+gulp.task("js", function (done) {
+    Browserify({
+        entries : ["./public/pigs_book/js/pigs_book.js"],
+        debug   : true
+    }).configure(function () {
+        this.bundler.transform(babelify, {
+            // Use all of the ES2015 spec
+            presets   : ["es2015"],
+            compact   : true,
+            sourceMaps: true
+        });
+    }).done(function (stream) {
+        pump([
+            stream,
+            buffer(),
+            sourcemaps.init({ loadMaps: true }),
+            uglify(),
+            sourcemaps.write("./"),
+            gulp.dest("build/pigs_book/js"),
+        ], done);
+    });
 });
 
 gulp.task("html", function () {
@@ -95,18 +79,35 @@ gulp.task("img", function () {
     ]);
 });
 
-gulp.task('clean', function () {
+gulp.task('browser-sync', ['watcher'], () => {
+    return browserSync.init({
+        proxy: "localhost/5book/pigs_book/pigs_book.html"
+    })
+});
+
+gulp.task('watcher', ['all'], function () {
+    gulp.watch('public/**/*.html').on('change', () => runSequence('html', browserSync.reload));
+    gulp.watch('public/**/*.ttf').on('change', () => runSequence('fonts', browserSync.reload));
+    gulp.watch('public/**/*.css').on('change', () => runSequence('css', browserSync.reload));
+    gulp.watch('public/**/*.png').on('change', () => runSequence('img', browserSync.reload));
+    gulp.watch('public/**/*.js').on('change', () => runSequence('js', browserSync.reload));
+});
+
+gulp.task('all',['js', 'html', 'img', 'css', 'fonts']);
+
+gulp.task('default', () => {
+    gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
+    return runSequence('browser-sync');
+});
+
+gulp.task('rebuild', () => {
+    return runSequence('clean', 'default');
+});
+
+gulp.task('clean', () => {
     return pump([
         gulp.src('build', { read: false }),
         clean()
     ]);
 });
 
-gulp.task('default', function (done) {
-    gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
-    runSequence(['js', 'html', 'img', 'css', 'fonts'], done);
-});
-
-gulp.task('rebuild', function (done) {
-    runSequence('clean', 'default', done);
-});
