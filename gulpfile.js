@@ -6,7 +6,6 @@ const gutil           = require('gulp-util');
 const pump            = require('pump');
 const commandLineArgs = require('command-line-args');
 const clean           = require('gulp-clean');
-const tap             = require('gulp-tap');
 const sourcemaps      = require('gulp-sourcemaps');
 const buffer          = require('vinyl-buffer');
 const runSequence     = require('run-sequence');
@@ -15,7 +14,7 @@ const uglify          = require('gulp-uglify');
 const changed         = require("gulp-changed");
 const imagemin        = require('gulp-imagemin');
 const Browserify      = require('browserify-gulp').default;
-const browserSync = require('browser-sync').create();
+const browserSync     = require('browser-sync').create();
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -25,8 +24,8 @@ const debug             = options["type"] === "debug";
 
 gulp.task("js", function (done) {
     Browserify({
-        entries : ["./public/pigs_book/js/pigs_book.js"],
-        debug   : true
+        entries: ["./public/pigs_book/js/pigs_book.js"],
+        debug  : true
     }).configure(function () {
         this.bundler.transform(babelify, {
             // Use all of the ES2015 spec
@@ -93,7 +92,7 @@ gulp.task('watcher', ['all'], function () {
     gulp.watch('public/**/*.js').on('change', () => runSequence('js', browserSync.reload));
 });
 
-gulp.task('all',['js', 'html', 'img', 'css', 'fonts']);
+gulp.task('all', ['js', 'html', 'img', 'css', 'fonts']);
 
 gulp.task('default', () => {
     gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
