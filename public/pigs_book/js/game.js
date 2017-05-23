@@ -19,33 +19,39 @@ const p2     = require('p2');
         // OBJECTS DEFINITIONS //
         /////////////////////////
         
-        class GameBodySprite {
+        class GameSprite {
+            constructor(x, y, width, height, spriteName) {
+                this._sprite        = new Sprite(resources[spriteName].texture);
+                this._sprite.x      = x;
+                this._sprite.y      = y;
+                this._sprite.width  = width;
+                this._sprite.height = height;
+            }
+    
+            get sprite() {
+                return this._sprite;
+            }
+    
+            update(deltaTime, totalTime) {
+                console.log(`Implement this function ${deltaTime} ${totalTime} ${this}`);
+            }
+        }
+        
+        class GameBodySprite extends GameSprite {
             constructor(x, y, width, height, spriteName, bodyOptions) {
+                super(x, y, width, height, spriteName);
+                
                 if (!bodyOptions) bodyOptions = {
                     collisionResponse: true,
                     type             : p2.Body.STATIC
                 };
                 bodyOptions["position"] = [x, y];
                 
-                this._sprite        = new Sprite(resources[spriteName].texture);
-                this._sprite.x      = x;
-                this._sprite.y      = y;
-                this._sprite.width  = width;
-                this._sprite.height = height;
-                
                 this._body = new p2.Body(bodyOptions);
-            }
-            
-            get sprite() {
-                return this._sprite;
             }
             
             get body() {
                 return this._body;
-            }
-            
-            update(deltaTime, totalTime) {
-                console.log(`Implement this function ${deltaTime} ${totalTime}`);
             }
         }
         
@@ -190,6 +196,19 @@ const p2     = require('p2');
             }
         }
         
+        class GamePlay extends GameSprite {
+            constructor() {
+                super(100, 100, 100, 100, "pausa");
+    
+                this._sprite.interactive = true;
+                this._sprite.buttonMode = true;
+                
+                this._sprite.on('click', event => {
+                    console.log(event);
+                });
+            }
+        }
+        
         //////////////////
         // MAIN PROGRAM //
         //////////////////
@@ -227,7 +246,8 @@ const p2     = require('p2');
             "brick_gray_border",
             "brick_gray_half_border",
             "ball",
-            "bar"
+            "bar",
+            "pausa"
         ].map(function (img) {
             return { name: img, url: IMG_PATH + img + ".png" }
         });
@@ -283,6 +303,9 @@ const p2     = require('p2');
             // Add livesDisplay text
             gameObject.livesDisplay = new GameLivesDisplay();
             stage.addChild(gameObject.livesDisplay.sprite);
+            gameObject.playButton = new GamePlay();
+            stage.addChild(gameObject.playButton.sprite);
+            
             gameObject.all.push(gameObject.livesDisplay);
             
             // Add all the elements to the stage
@@ -290,6 +313,8 @@ const p2     = require('p2');
                 stage.addChild(element.sprite);
                 world.addBody(element.body);
             });
+            
+             
             
             gameObject.all = gameObject.all.concat(gameObject.allSpriteBody);
             
