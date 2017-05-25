@@ -206,7 +206,7 @@ const p2     = require('p2');
                 this._sprite.interactive = true;
                 this._sprite.buttonMode = true;
                 
-                this._sprite.on('click', event => {
+                this._sprite.on('click', function(event) {
                     gameData.mode = GAME_MODES.PLAYING;
                     this._sprite.visible = false;
                 }); // Prova
