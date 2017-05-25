@@ -18,6 +18,7 @@ const browserSync     = require('browser-sync').create();
 const browserify      = require('browserify');
 const source          = require('vinyl-source-stream');
 const watchify        = require('watchify');
+const errorify = require('errorify');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -38,17 +39,15 @@ let b = watchify(browserify({
                 presets   : ["es2015"],
                 compact   : true,
                 sourceMaps: true,
-            }]
+            }],
     ]
 }));
 b.on('log', gutil.log);
 
-gulp.task("js", () => {
+gulp.task("js", done => {
     return pump([
-        b.bundle().on('error', function (err) {
-            gutil.log(gutil.colors.red(err.message));
-            browserSync.notify(err.message, 3000);
-            this.emit('end');
+        b.bundle().on('error', err => {
+            done(err.stack);
         }),
         source('main.js'),
         buffer(),
