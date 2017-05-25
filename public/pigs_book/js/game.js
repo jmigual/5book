@@ -197,15 +197,19 @@ const p2     = require('p2');
         }
         
         class GamePlay extends GameSprite {
-            constructor() {
-                super(100, 100, 100, 100, "pausa");
+            constructor(x, y) {
+                const width = 100,
+                      height = 100;
+                
+                super(x - width/2, y - height/2, width, height, "pausa");
     
                 this._sprite.interactive = true;
                 this._sprite.buttonMode = true;
                 
                 this._sprite.on('click', event => {
-                    console.log(event);
-                });
+                    gameData.mode = GAME_MODES.PLAYING;
+                    this._sprite.visible = false;
+                }); // Prova
             }
         }
         
@@ -258,7 +262,7 @@ const p2     = require('p2');
         
         // Define variables that might be used in more than one function
         let gameData = {
-            mode       : GAME_MODES.PLAYING,
+            mode       : GAME_MODES.MAIN_MENU,
             lastTime   : null,
             currentLine: 0,
             lineCounter: null,
@@ -303,7 +307,7 @@ const p2     = require('p2');
             // Add livesDisplay text
             gameObject.livesDisplay = new GameLivesDisplay();
             stage.addChild(gameObject.livesDisplay.sprite);
-            gameObject.playButton = new GamePlay();
+            gameObject.playButton = new GamePlay(renderer.width/2, renderer.height/2);
             stage.addChild(gameObject.playButton.sprite);
             
             gameObject.all.push(gameObject.livesDisplay);

@@ -15,6 +15,9 @@ const changed         = require("gulp-changed");
 const imagemin        = require('gulp-imagemin');
 const Browserify      = require('browserify-gulp').default;
 const browserSync     = require('browser-sync').create();
+const browserify      = require('browserify');
+const source          = require('vinyl-source-stream');
+const watchify        = require('watchify');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -22,27 +25,38 @@ const optionDefinitions = [
 const options           = commandLineArgs(optionDefinitions, { partial: true });
 const debug             = options["type"] === "debug";
 
-gulp.task("js", function (done) {
-    Browserify({
-        entries: ["./public/pigs_book/js/pigs_book.js"],
-        debug  : true
-    }).configure(function () {
-        this.bundler.transform(babelify, {
-            // Use all of the ES2015 spec
-            presets   : ["es2015"],
-            compact   : true,
-            sourceMaps: true
-        });
-    }).done(function (stream) {
-        pump([
-            stream,
-            buffer(),
-            sourcemaps.init({ loadMaps: true }),
-            uglify(),
-            sourcemaps.write("./"),
-            gulp.dest("build/pigs_book/js"),
-        ], done);
-    });
+let b = watchify(browserify({
+    entries      : ["./public/pigs_book/js/pigs_book.js"],
+    debug        : true,
+    insertGlobals: true,
+    cache        : {},
+    packageCache : {},
+    transform    : [
+        [babelify,
+            {
+                // Use all of the ES2015 spec
+                presets   : ["es2015"],
+                compact   : true,
+                sourceMaps: true,
+            }]
+    ]
+}));
+b.on('log', gutil.log);
+
+gulp.task("js", () => {
+    return pump([
+        b.bundle().on('error', function (err) {
+            gutil.log(gutil.colors.red(err.message));
+            browserSync.notify(err.message, 3000);
+            this.emit('end');
+        }),
+        source('main.js'),
+        buffer(),
+        sourcemaps.init({ loadMaps: true }),
+        uglify(),
+        sourcemaps.write("./"),
+        gulp.dest("build/pigs_book/js"),
+    ]);
 });
 
 gulp.task("html", function () {
