@@ -18,7 +18,7 @@ const browserSync     = require('browser-sync').create();
 const browserify      = require('browserify');
 const source          = require('vinyl-source-stream');
 const watchify        = require('watchify');
-const errorify = require('errorify');
+const errorify        = require('errorify');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
