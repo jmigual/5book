@@ -52,7 +52,11 @@ gulp.task("js", done => {
         source('main.js'),
         buffer(),
         sourcemaps.init({ loadMaps: true }),
-        uglify(),
+        uglify({
+            compress: {
+                unused: false
+            }
+        }),
         sourcemaps.write("./"),
         gulp.dest("build/pigs_book/js"),
     ]);

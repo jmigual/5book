@@ -61,7 +61,7 @@ const p2     = require('p2');
                       height = 40;
                 
                 if (!y) y = 40;
-                if (!x) x = $(window).width()/2;
+                if (!x) x = renderer.width/2;
                 
                 // Call parent constructor
                 super(x, y, width, height, "ball", {
@@ -89,10 +89,10 @@ const p2     = require('p2');
                 //console.log("Velocity:", this._body.velocity);
                 
                 // Set constant velocity to the ball
-                let v               = this._body.velocity;
-                v                   = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
-                v[1]                = this.VY*(v[1]/Math.abs(v[1]));
-                this._body.velocity = v;
+                //let v               = this._body.velocity;
+                //v                   = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
+                //v[1]                = this.VY*(v[1]/Math.abs(v[1]));
+                this._body.velocity[1] = this.VY;
             }
         }
         
@@ -196,20 +196,40 @@ const p2     = require('p2');
             }
         }
         
-        class GamePlay extends GameSprite {
+        class GameButtonPlay extends GameSprite {
             constructor(x, y) {
                 const width = 100,
                       height = 100;
                 
-                super(x - width/2, y - height/2, width, height, "pausa");
+                super(x - width/2, y - height/2, width, height, "play");
     
                 this._sprite.interactive = true;
                 this._sprite.buttonMode = true;
                 
-                this._sprite.on('click', function(event) {
+                this._sprite.on('click', function() {
                     gameData.mode = GAME_MODES.PLAYING;
-                    this._sprite.visible = false;
-                }); // Prova
+                    this.visible = false;
+                });
+            }
+        }
+        
+        class GameButtonReplay extends GameSprite {
+            constructor(x, y) {
+                const width = 100,
+                      height = 100;
+                
+                super(x - width/2, y - height/2, width, height, "reload");
+                
+                this._sprite.interactive = true;
+                this._sprite.buttonMode = true;
+                this._sprite.visible = false;
+                
+                this._sprite.on('click', function() {
+                    gameObject.livesDisplay.lives = 3;
+                    gameObject.ball.body.position = [40, renderer.width/2];
+                    gameData.mode = GAME_MODES.PLAYING;
+                    this.visible = false;
+                })
             }
         }
         
@@ -251,7 +271,8 @@ const p2     = require('p2');
             "brick_gray_half_border",
             "ball",
             "bar",
-            "pausa"
+            "play",
+            "reload"
         ].map(function (img) {
             return { name: img, url: IMG_PATH + img + ".png" }
         });
@@ -276,7 +297,9 @@ const p2     = require('p2');
             topBar       : null,
             brickLines   : [],
             allSpriteBody: [],
-            all          : []
+            all          : [],
+            buttonPlay   : null,
+            buttonReplay : null
         };
         
         function setup() {
@@ -307,8 +330,9 @@ const p2     = require('p2');
             // Add livesDisplay text
             gameObject.livesDisplay = new GameLivesDisplay();
             stage.addChild(gameObject.livesDisplay.sprite);
-            gameObject.playButton = new GamePlay(renderer.width/2, renderer.height/2);
-            stage.addChild(gameObject.playButton.sprite);
+            gameObject.buttonPlay = new GameButtonPlay(renderer.width/2, renderer.height/2);
+            stage.addChild(gameObject.buttonPlay.sprite);
+            gameObject.buttonReplay = new GameButtonReplay(renderer.width/2, renderer.height/2);
             
             gameObject.all.push(gameObject.livesDisplay);
             
