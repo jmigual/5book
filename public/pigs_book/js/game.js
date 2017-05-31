@@ -1,6 +1,6 @@
-const $ = require('jquery');
-const PIXI   = require('pixi.js');
-const p2     = require('p2');
+const $    = require('jquery');
+const PIXI = require('pixi.js');
+const p2   = require('p2');
 
 (function ($) {
     $.fn.PongGame = function () {
@@ -11,8 +11,7 @@ const p2     = require('p2');
               resources = loader.resources;
         
         // Aliases for p2
-        const vec2 = p2.vec2,
-              Body = p2.Body;
+        const vec2 = p2.vec2;
         
         
         /////////////////////////
@@ -27,11 +26,11 @@ const p2     = require('p2');
                 this._sprite.width  = width;
                 this._sprite.height = height;
             }
-    
+            
             get sprite() {
                 return this._sprite;
             }
-    
+            
             update(deltaTime, totalTime) {
                 console.log(`Implement this function ${deltaTime} ${totalTime} ${this}`);
             }
@@ -78,7 +77,7 @@ const p2     = require('p2');
                 this.VELOCITY         = 250;
                 this.VY               = 230;
                 
-                let v               = vec2.normalize(vec2.create(), vec2.fromValues(Math.random(), Math.random()*2));
+                let v               = vec2.normalize(vec2.create(), vec2.fromValues(Math.random()/2 + 0.3, Math.random()*2));
                 this._body.velocity = vec2.scale(vec2.create(), v, this.VELOCITY);
             }
             
@@ -89,10 +88,8 @@ const p2     = require('p2');
                 //console.log("Velocity:", this._body.velocity);
                 
                 // Set constant velocity to the ball
-                //let v               = this._body.velocity;
-                //v                   = vec2.scale(vec2.create(), vec2.normalize(vec2.create(), v), this.VELOCITY);
-                //v[1]                = this.VY*(v[1]/Math.abs(v[1]));
-                this._body.velocity[1] = this.VY;
+                let v                  = this._body.velocity;
+                this._body.velocity[1] = this.VY*Math.sign(v[1]);
             }
         }
         
@@ -198,37 +195,37 @@ const p2     = require('p2');
         
         class GameButtonPlay extends GameSprite {
             constructor(x, y) {
-                const width = 100,
+                const width  = 100,
                       height = 100;
                 
                 super(x - width/2, y - height/2, width, height, "play");
-    
-                this._sprite.interactive = true;
-                this._sprite.buttonMode = true;
                 
-                this._sprite.on('click', function() {
+                this._sprite.interactive = true;
+                this._sprite.buttonMode  = true;
+                
+                this._sprite.on('click', function () {
                     gameData.mode = GAME_MODES.PLAYING;
-                    this.visible = false;
+                    this.visible  = false;
                 });
             }
         }
         
         class GameButtonReplay extends GameSprite {
             constructor(x, y) {
-                const width = 100,
+                const width  = 100,
                       height = 100;
                 
                 super(x - width/2, y - height/2, width, height, "reload");
                 
-                this._sprite.interactive = true;
-                this._sprite.buttonMode = true;
-                this._sprite.visible = false;
+                this._sprite.interactive = false;
+                this._sprite.buttonMode  = false;
+                this._sprite.visible     = false;
                 
-                this._sprite.on('click', function() {
+                this._sprite.on('click', function () {
                     gameObject.livesDisplay.lives = 3;
                     gameObject.ball.body.position = [40, renderer.width/2];
-                    gameData.mode = GAME_MODES.PLAYING;
-                    this.visible = false;
+                    gameData.mode                 = GAME_MODES.PLAYING;
+                    this.visible                  = false;
                 })
             }
         }
@@ -333,6 +330,7 @@ const p2     = require('p2');
             gameObject.buttonPlay = new GameButtonPlay(renderer.width/2, renderer.height/2);
             stage.addChild(gameObject.buttonPlay.sprite);
             gameObject.buttonReplay = new GameButtonReplay(renderer.width/2, renderer.height/2);
+            stage.addChild(gameObject.buttonReplay.sprite);
             
             gameObject.all.push(gameObject.livesDisplay);
             
@@ -342,7 +340,6 @@ const p2     = require('p2');
                 world.addBody(element.body);
             });
             
-             
             
             gameObject.all = gameObject.all.concat(gameObject.allSpriteBody);
             
@@ -420,7 +417,6 @@ const p2     = require('p2');
         function gameLoop(time) {
             // Loop this function at 60 frames per second
             requestAnimationFrame(gameLoop);
-            
             const deltaTime = (gameData.lastTime ? time - gameData.lastTime : 0)/1000;
             
             if (gameData.mode === GAME_MODES.PLAYING) {
@@ -431,7 +427,11 @@ const p2     = require('p2');
             } else if (gameData.mode === GAME_MODES.FINISHED_WON) {
                 
             } else if (gameData.mode === GAME_MODES.FINISHED_LOOSE) {
-                
+                console.log("Player lost");
+                let buttSprite = gameObject.buttonReplay.sprite;
+                buttSprite.visible = true;
+                buttSprite.interactive = true;
+                buttSprite.buttonMode = true;
             }
             
             // Render the stage to see the animation
@@ -530,7 +530,7 @@ const p2     = require('p2');
                 gameObject.livesDisplay.lives--;
                 if (gameObject.livesDisplay.lives <= 0) {
                     // Deactivated due to debug
-                    //gameData.mode = GAME_MODES.FINISHED_LOOSE;
+                    gameData.mode = GAME_MODES.FINISHED_LOOSE;
                 }
             } else if (gameData.incLine && otherBody === gameObject.playerBar.body) {
                 ++gameData.currentLine;
