@@ -30,7 +30,6 @@ $(document).ready(function () {
     
     $("#main-container").fullpage({
         verticalCentered     : true,
-        //sectionsColor        : ["#2B2B2B", "#2B2B2B", "#2B2B2B"],
         loopBottom           : false,
         fitToSection         : false,
         paddingTop           : 0,
@@ -41,5 +40,15 @@ $(document).ready(function () {
             console.log(anchorLink, index);
         }
     });
+    
+    $("#buttonNext").click(function(e) {
+        e.preventDefault();
+        $.fn.fullpage.moveSectionDown();
+    });
+    
+    $("#buttonPrev").click(function(e) {
+        e.preventDefault();
+        $.fn.fullpage.moveSectionUp();
+    })
 });
 
