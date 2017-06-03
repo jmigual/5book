@@ -29,26 +29,31 @@ $(document).ready(function () {
     elem.sketch().redraw();
     
     $("#main-container").fullpage({
-        verticalCentered     : true,
-        loopBottom           : false,
-        fitToSection         : false,
-        paddingTop           : 0,
-        sectionSelector      : ".fp-section",
-        scrollOverflow       : true,        
-        navigation: true,
-        afterLoad: function(anchorLink, index) {
+        verticalCentered: true,
+        loopBottom      : false,
+        sectionSelector : ".fp-section",
+        navigation      : true,
+        afterLoad       : function (anchorLink, index) {
             console.log(anchorLink, index);
         }
     });
     
-    $("#buttonNext").click(function(e) {
-        e.preventDefault();
+    $("#buttonNext").click(() => {
         $.fn.fullpage.moveSectionDown();
     });
     
-    $("#buttonPrev").click(function(e) {
-        e.preventDefault();
+    $("#buttonPrev").click(() => {
         $.fn.fullpage.moveSectionUp();
+    });
+    
+    $("#buttonSound").click( function() {
+        let active = $(this).data("active");
+        this.src   = "img/rendered/" + (active ? "sound_off.png" : "sound.png");
+        $(this).data("active", !active);
+    });
+    
+    $("#buttonStart").click(function() {
+        $.fn.fullpage.moveTo(1);
     })
 });
 
