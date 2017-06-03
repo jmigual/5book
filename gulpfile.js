@@ -37,7 +37,7 @@ let b = watchify(browserify({
             {
                 // Use all of the ES2015 spec
                 presets   : ["es2015"],
-                compact   : true,
+                compact   : !debug,
                 sourceMaps: true,
             }],
     ]
@@ -52,11 +52,7 @@ gulp.task("js", done => {
         source('main.js'),
         buffer(),
         sourcemaps.init({ loadMaps: true }),
-        uglify({
-            compress: {
-                unused: false
-            }
-        }),
+        debug ? gutil.noop() : uglify(),
         sourcemaps.write("./"),
         gulp.dest("build/pigs_book/js"),
     ]);
