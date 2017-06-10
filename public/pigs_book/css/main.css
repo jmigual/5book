@@ -7,30 +7,28 @@
     font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
+
 blockquote > p:before {
-    content: "- ";
+content: "- ";
 }
 
 blockquote > p {
-    margin: 0 0 0 0;
+margin: 0 0 0 0;
 }
 
 .canvas-view {
-    width: 100%;
-    height: 100%;
-    background-color: white;
+width: 100%;
+height: 100%;
+background-color: white;
 }
 
 .markdown {
-    padding: 0 15% 0 15%;
-    font-size: large;
+padding: 0 15% 0 15%;
+font-size: large;
 }
 
 .element-book {
-    width: 90%;
-    height: 80%;
+width: 90%;
+height: 80%;
 }
 
-.fp-section {
-    background: url("../img/rendered/fons_general.png") repeat-y;
-}
