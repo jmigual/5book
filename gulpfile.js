@@ -82,6 +82,14 @@ gulp.task("fonts", function () {
     ]);
 });
 
+gulp.task("media", function() {
+    return pump([
+        gulp.src(['public/**/*.mp4', 'public/**/*.mp3']),
+        changed("build"),
+        gulp.dest("build")
+    ])
+});
+
 gulp.task("img", function () {
     return pump([
         gulp.src(['public/**/rendered/*.png', 'public/**/game/*.png']),
@@ -103,9 +111,10 @@ gulp.task('watcher', ['all'], function () {
     gulp.watch('public/**/*.css').on('change', () => runSequence('css', browserSync.reload));
     gulp.watch('public/**/*.png').on('change', () => runSequence('img', browserSync.reload));
     gulp.watch('public/**/*.js').on('change', () => runSequence('js', browserSync.reload));
+    gulp.watch(['public/**/*.mp3', 'public/**/*.mp4']).on('change', () => runSequence('media', browserSync.reload));
 });
 
-gulp.task('all', ['js', 'html', 'img', 'css', 'fonts']);
+gulp.task('all', ['js', 'html', 'img', 'css', 'fonts', 'media']);
 
 gulp.task('default', () => {
     gutil.log(gutil.colors.green(`Building in ${options["type"]} mode`));
