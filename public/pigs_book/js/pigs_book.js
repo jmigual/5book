@@ -34,6 +34,7 @@ $(document).ready(function () {
         loopBottom      : false,
         sectionSelector : ".fp-section",
         navigation      : true,
+        paddingBottom   : "100px",
         afterLoad       : function (anchorLink, index) {
             console.log(anchorLink, index);
         }
