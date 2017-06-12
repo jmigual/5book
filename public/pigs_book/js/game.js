@@ -10,6 +10,8 @@ const p2   = require('p2');
               loader    = PIXI.loader,
               resources = loader.resources;
         
+        const $elem = $(this);
+        
         // Aliases for p2
         const vec2 = p2.vec2;
         
@@ -249,12 +251,11 @@ const p2   = require('p2');
               };
         
         // Configure renderer
-        const renderer = PIXI.autoDetectRenderer($(this).width(), $(this).height()),
+        const renderer = PIXI.autoDetectRenderer($elem.width(), $elem.height()),
               stage    = new Container(),
-              ratio    = $(this).width()/$(this).height();
+              ratio    = $elem.width()/$elem.height();
         let world;
-        
-        $(this).html(renderer.view);
+        $elem.html(renderer.view);
         renderer.backgroundColor = 0xFFFFFF;
         renderer.transparent     = true;
         
@@ -512,10 +513,10 @@ const p2   = require('p2');
             return body;
         }
         
-        $(this).resize(() => {
-            let w = $(this).width(),
-                h = $(this).height();
-            $(this).width()/$(this).height() >= ratio ? w *= ratio : h /= ratio;
+        $elem.resize(() => {
+            let w = $elem.width(),
+                h = $elem.height();
+            $elem.width()/$elem.height() >= ratio ? w *= ratio : h /= ratio;
             
             renderer.view.style.width  = w + 'px';
             renderer.view.style.height = h + 'px';
