@@ -103,7 +103,7 @@ $(document).ready(function () {
         $.fn.fullpage.moveTo(1);
     });
     
-    let active = false; // For debug purposes only, it should be true
+    let active = true;
     let sounds = {};
     
     $("#buttonSound").click(function () {
