@@ -13,7 +13,6 @@ const babelify        = require('babelify');
 const uglify          = require('gulp-uglify');
 const changed         = require("gulp-changed");
 const imagemin        = require('gulp-imagemin');
-const Browserify      = require('browserify-gulp').default;
 const browserSync     = require('browser-sync').create();
 const browserify      = require('browserify');
 const source          = require('vinyl-source-stream');
