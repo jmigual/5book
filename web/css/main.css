@@ -7,28 +7,33 @@
     font-family: "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
 }
 
-
 blockquote > p:before {
-content: "- ";
+    content: "- ";
 }
 
 blockquote > p {
-margin: 0 0 0 0;
+    margin: 0 0 0 0;
 }
 
-.canvas-view {
-width: 100%;
-height: 100%;
-background-color: white;
+.canvas-view > canvas {
+    width: 100%;
+    height: 90%;
+    background-color: white;
+}
+
+.canvas-view > .w3-row > a, .canvas-view > .w3-row > a > img {
+    padding: 0 5px 0 5px;
+    height: 30px;
+    margin-bottom: 10px;
 }
 
 .markdown {
-padding: 0 15% 0 15%;
-font-size: large;
+    padding: 0 15% 0 15%;
+    font-size: large;
 }
 
 .element-book {
-width: 90%;
-height: 80%;
+    width: 90%;
+    height: 80%;
 }
 
