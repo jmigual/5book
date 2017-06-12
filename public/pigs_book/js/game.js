@@ -2,6 +2,16 @@ const $    = require('jquery');
 const PIXI = require('pixi.js');
 const p2   = require('p2');
 
+window.requestAnimationFrame = (function () {
+    return window.requestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function (callback) {
+            window.setTimeout(callback, 1000/30);
+        };
+})();
+
 (function ($) {
     $.fn.PongGame = function () {
         // Aliases for PIXI
@@ -251,7 +261,9 @@ const p2   = require('p2');
               };
         
         // Configure renderer
-        const renderer = PIXI.autoDetectRenderer($elem.width(), $elem.height()),
+        const renderer = PIXI.autoDetectRenderer($elem.width(), $elem.height(), {
+                  antialias : true
+              }),
               stage    = new Container(),
               ratio    = $elem.width()/$elem.height();
         let world;
@@ -270,7 +282,9 @@ const p2   = require('p2');
             "ball",
             "bar",
             "play",
-            "reload"
+            "reload",
+            "background",
+            "pig"
         ].map(function (img) {
             return { name: img, url: IMG_PATH + img + ".png" }
         });
@@ -304,6 +318,9 @@ const p2   = require('p2');
             // Set world properties
             world                                    = new p2.World({ gravity: [0, 0] });
             world.defaultContactMaterial.restitution = 1;
+            
+            stage.addChild((new GameSprite(0, 0, renderer.width, renderer.height, "background")).sprite);
+            stage.addChild((new GameSprite(50, renderer.height - 200, 150, 200, "pig")).sprite);
             
             setupBricks();
             
@@ -428,11 +445,10 @@ const p2   = require('p2');
             } else if (gameData.mode === GAME_MODES.FINISHED_WON) {
                 
             } else if (gameData.mode === GAME_MODES.FINISHED_LOOSE) {
-                console.log("Player lost");
-                let buttSprite = gameObject.buttonReplay.sprite;
-                buttSprite.visible = true;
+                let buttSprite         = gameObject.buttonReplay.sprite;
+                buttSprite.visible     = true;
                 buttSprite.interactive = true;
-                buttSprite.buttonMode = true;
+                buttSprite.buttonMode  = true;
             }
             
             // Render the stage to see the animation
@@ -449,21 +465,6 @@ const p2   = require('p2');
             gameObject.all.forEach(object => {
                 object.update(deltaTime, time);
             });
-        }
-        
-        // This function has to show the different options and the button showing 'play'
-        function mainMenu(deltaTime) {
-            
-        }
-        
-        // Has to show the text saying the player that it has won
-        function finished_win(deltaTime) {
-            
-        }
-        
-        // Has to show the text to finish and loose
-        function finished_loose(deltaTime) {
-            
         }
         
         //////////////////////

@@ -9,16 +9,6 @@ require('./game');
 require('./jquery.fullpage');
 require('./sketch');
 
-window.requestAnimationFrame = (function () {
-    return window.requestAnimationFrame ||
-        window.mozRequestAnimationFrame ||
-        window.webkitRequestAnimationFrame ||
-        window.msRequestAnimationFrame ||
-        function (callback) {
-            window.setTimeout(callback, 1000/30);
-        };
-})();
-
 $(document).ready(function () {
     $("#pong-game-canvas").PongGame();
     
