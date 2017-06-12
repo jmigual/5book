@@ -26,9 +26,59 @@ $(document).ready(function () {
         $(this).html(marked($(this).text()));
     });
     
-    const elem = $(".canvas-view");
-    elem.sketch();
-    elem.sketch().redraw();
+    $(".canvas-view").each(function(id) {
+        let $elem = $(this);
+        let idS = `drawing_${id}`;
+        
+        let container = document.createElement("div");
+        $(container).addClass("w3-row");
+        
+        $.each(['#f00', '#ff0', '#0f0', '#0ff', '#00f', '#f0f', '#000', '#fff'], function() {
+            let link = document.createElement("a");
+            link.href = `#${idS}`;
+            link.setAttribute('data-color', this);
+            $(link).addClass("w3-col s1");
+            
+            let color = document.createElement("div");
+            color.style = `width: 100%; height: 100%; background: ${this}`;
+            $(color).addClass("w3-border w3-hover-opacity");
+            $(link).append(color);
+            
+            $(container).append(link);
+        });
+        
+        $(container).append("<div class='w3-rest'></div>");
+        ['brush', 'eraser'].map(elem => {
+            let link = document.createElement("a");
+            link.href = `#${idS}`;
+            link.setAttribute('data-tool', elem);
+            link.style = "width: 45px";
+            $(link).addClass("w3-col w3-right");
+            
+            $(link).append(`<img class='w3-image w3-opacity w3-hover-opacity-off' src='./img/rendered/${elem}.png'>`);
+            $(container).append(link);
+        });
+        
+        {
+            let link = document.createElement("a");
+            link.href = `#${idS}`;
+            link.setAttribute('data-download', 'pngp');
+            link.style = "width: 45px";
+            $(link).addClass("w3-col w3-right");
+            $(link).append(`<img class='w3-image w3-opacity w3-hover-opacity-off' src='./img/rendered/save.png'>`)
+            $(container).append(link);
+        }
+        
+        $elem.append(container);
+        
+        let canvas = document.createElement("canvas");
+        $(canvas).addClass("w3-border");
+        $(canvas).attr('id', idS);
+        
+        $elem.append(canvas);
+    
+        $(`#drawing_${id}`).sketch();
+    });
     
     $("#main-container").fullpage({
         verticalCentered: true,
@@ -53,7 +103,7 @@ $(document).ready(function () {
         $.fn.fullpage.moveTo(1);
     });
     
-    let active = true;
+    let active = false; // For debug purposes only, it should be true
     let sounds = {};
     
     $("#buttonSound").click(function () {
@@ -78,7 +128,7 @@ $(document).ready(function () {
         let type = $(this).data('type');
         if (!active || !type) return;
         
-        console.log(type);
+        console.log("Entering:", type);
         sounds[type].play();
         sounds[type].fade(0, 1, 500);
     }
@@ -87,7 +137,7 @@ $(document).ready(function () {
         let type = $(this).data('type');
         if (!active || !type) return;
         
-        console.log("Leaving: ", type);
+        console.log("Leaving:", type);
         sounds[type].fade(1, 0, 500);
     }
 });
