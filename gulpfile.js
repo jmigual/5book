@@ -18,6 +18,7 @@ const browserify      = require('browserify');
 const source          = require('vinyl-source-stream');
 const watchify        = require('watchify');
 const errorify        = require('errorify');
+const wait            = require('gulp-wait');
 
 const optionDefinitions = [
     { name: 'type', alias: 't', defaultValue: "release" },
@@ -81,7 +82,7 @@ gulp.task("fonts", function () {
     ]);
 });
 
-gulp.task("media", function() {
+gulp.task("media", function () {
     return pump([
         gulp.src(['public/**/*.mp4', 'public/**/*.mp3']),
         changed("build"),
@@ -91,6 +92,7 @@ gulp.task("media", function() {
 
 gulp.task("img", function () {
     return pump([
+        wait(500),
         gulp.src(['public/**/rendered/*.png', 'public/**/game/*.png']),
         changed("build"),
         imagemin({ verbose: true }),

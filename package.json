@@ -29,6 +29,7 @@
     "gulp-sourcemaps": "^2.6.0",
     "gulp-uglify": "^2.1.2",
     "gulp-util": "^3.0.8",
+    "gulp-wait": "0.0.2",
     "pump": "^1.0.2",
     "run-sequence": "^1.2.2",
     "vinyl-buffer": "^1.0.0",
